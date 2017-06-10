@@ -1,29 +1,102 @@
+"""
+This file contains the computation of all datas recieved by the robot to
+find the robot position in the given perimeter.
+The input datas are:
+    - the map (user input the coordinate of LEDs landmarks)
+    - the mode (user input, boolean true if it is a rectangle)
+    - the side perpendicular to the robot direction at initialisation
+    (user input maybe ommited)
+    - the angle between the direction at initialisation and the north
+    (magnetic captor, one data send at initialisation)
+    - the angle between the actual direction and the north
+    (magnetic captor, periodically)
+    - the angle to at least two LEDs landmark (camera on step motor + programm
+    to extract the angles, periodically)
+    - the distance calculated from the blobs of light on the previous pictures
+    - the datas linked to the odometry
+    (previous position, estimated position, error margin)
+"""
+""" Initialisation procedure
+During the initialisation phase the user has to put the LEDs landmark on the map
+and input their coodinates and color into the API.
+Before turning on the robot for initialisation phase it has to face a side
+of the perimeter delimited by LEDs. The minimum number of LEDs landmark is 4.
+The LEDs have to be of different colors for the location to work properly.
+
+There are two different modes for the configuration of the LED disposition
+that the user can choose from.
+The first mode is to have a perfect rectangle as the perimeter of the garden.
+In this mode there is no need for more input from the user.
+The second mode is when the perimeter of the garden is not a perfect rectangle
+or that they are more than 4 LED landmarks.
+
+ The map will have the following conventions:
+  Y(0, 10)                                  B(10, 10)
+       _____________________________________
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+       _____________________________________
+  R(0, 0)                                   G(10, 0)
+
+Where the lower-left most landmark is (0, 0) and the other coordinates
+are
+represented from the lower-left most one in meter.
+
+"""
+""" Default Angle representation
+                           +y
+
+                           |    /
+                           |   /
+                           |  /   + Theta
+                           | / )
++/- 180 degrees    -x ----------------- + x    0 degrees => Direction D
+                           | \ )
+                           |  \   - Theta
+                           |   \
+                           |    \
+
+                          -y
+With 0 <= Theta <= 180.
+
+The direction D is the direction of the robot at initialisation.
+
+"""
 import math
 from enum import Enum
+from geometry import Point, Triangle
 
+# Globals Datas: (For the moment most of them are dummies)
 # position is in meter
 # angles are from -180 to 180 degree
 
+# The mathematical precision for round operations
 PRECISION = 4
-class Point:
 
-    # Thresold to determine that two points are similar (distance < 15cm)
-    _threshold = 0.15
+# Angle between the north and the axis of the robot at Initialisation
+# (same axis as an edge of the perimeter)
+# This angle is a fixed data measured at the initialization of the robot.
+# The angle is between 180 and -180 degree
+angleNorth = 20.0
 
-    def __init__(self, x, y):
-        self.X = x
-        self.Y = y
+# This variable represent the mode choosen by the user at initialisation
+RECTANGLE_MODE = False
 
-    def __str__(self):
-        return "Point(%s,%s)"%(self.X, self.Y)
+# This variable represent the direction of initialisation
+# Vector perpendicular to the side it face when initialised
+# This data is inputted by the user.
+dirInit = (0, 10)
 
-    def distance(self, other):
-        dx = self.X - other.X
-        dy = self.Y - other.Y
-        return round(math.sqrt(dx**2 + dy**2), PRECISION)
-
-    def __eq__(self, other):
-        return self.distance(other) < self._threshold
+# Angle between actual direction and North
+# This data can be harvested in real time with a magnetic captor
+# for now we will keep this fake value
+angleToDirection = 35.0
 
 class Color(Enum):
     NONE = 0
@@ -50,10 +123,10 @@ corner2 = LED(Color.GREEN, Point(10.0, 0.0))
 corner3 = LED(Color.BLUE, Point(0.0, 10.0))
 corner4 = LED(Color.YELLOW, Point(10.0, 10.0))
 
-map = [corner1, corner2, corner3, corner4]
+perimeter = [corner1, corner2, corner3, corner4]
 
 def _getLED(color):
-    for i in map:
+    for i in perimeter:
         if i.color == color:
             return i
     raise ValueError('Color not found')
@@ -61,12 +134,24 @@ def _getLED(color):
 class Data:
 
     def __init__(self, color, angle, distance=None):
-        self.angle = angle
+        # Convert angle from (LED -> Actual direction) to
+        # (LED -> edge of perimeter)
+        self.angle = angle + angleToDirection + angleNorth
         self.distance = distance
         try:
             self.led = _getLED(color)
         except ValueError as error:
             print('The color does not correspond to an existing LED')
+
+    # adjust the distance between the inputted data and the one one
+    # calculated with its angle.
+    # This function is to be adjusted with real data in order to reduce
+    # the error due to each method
+    def adjustDistance(self, dist):
+        if self.distance == None:
+            self.distance = dist
+        else:
+            self.distance = (self.distance + dist) / 2
 
 data1 = Data(Color.RED, 55.0, 3.8)
 data2 = Data(Color.GREEN, -35.0, 9.4)
@@ -138,119 +223,39 @@ def filterPoints(solutions, corners):
     return [value for value in solutions if value.X < Xmax and value.X > Xmin
             and value.Y < Ymax and value.Y > Ymin]
 
-
+# This function is due to be replaced by a better one that will
+# synthetize all the other datas
 def getPos3Dist(data1, data2, data3):
     res = getPos2Dist(data1, data2)
-    res = filterPoints(res, map)
+    res = filterPoints(res, perimeter)
     if len(res) == 0:
         return None
     if len(res) == 1:
         return res[0]
     res2 = getPos2Dist(data2, data3)
-    res2 = filterPoints(res2, map)
+    res2 = filterPoints(res2, perimeter)
     for i in res:
         if i in res2:
             return i;
     return None
 
-# Angle between the north and the axis of the robot at Initialisation
-# (same axis as an edge of the perimeter)
-# This angle is a fixed data measured at the initialization of the robot.
-# The angle is between 180 and -180 degree
-# We can imagine that an option will make available the last angle measured if
-# the map hasn't changed.
-# The instruction is for the user to put the robot parralel to an edge of the
-# perimeter of the garden to enable easier computations.
-# We can also suppose that if our datas are sufficient this constraint can be
-# an option left to the user in order to improve the location
-angleNorth = 20.0
-
-# Before the initialisation the user will input the map with each color
-# corresponding to each corner of the map. He will also have to input the
-# direction where the robot is initialized.
-# The following vector is the direction it is initialized.
-# This data may not be needed
-
-# dirInit = (0, 10)
-
-# The map will have the following conventions:
-#  R(0, 0)                                  G(10, 0)
-#       _____________________________________
-#      |                                     |
-#      |                                     |
-#      |                                     |
-#      |                                     |
-#      |                                     |
-#      |                                     |
-#      |                                     |
-#      |                                     |
-#       _____________________________________
-#  Y(0, 10)                                  B(10, 10)
-# For now as we don't have yet the map representation these fake datas
-# will represent the order of the corners
-mapCorners = {Color.RED: 0, Color.GREEN: 1,
-        Color.BLUE: 2, Color.YELLOW: 3}
-
 def isAdjacent(color1, color2):
     if color1 == color2:
         return false;
-    val = abs(mapCorners[color1] - mapCorners[color2])
-    return val == 1 or val == 3
-
-""" Default Angle representation
-                           +y
-
-                           |    /
-                           |   /
-                           |  /   + Theta
-                           | / )
-+/- 180 degrees    -x ----------------- + x    0 degrees => Direction D
-                           | \ )
-                           |  \   - Theta
-                           |   \
-                           |    \
-
-                          -y
-With 0 <= Theta <= 180.
-
-The direction D is the direction of the robot at initialisation.
-
-"""
-
-# Angle between actual direction and North
-# This data can be harvested in real time with a magnetic captor
-# for now we will keep this fake value
-angleToDirection = 35.0
-
-# Convert angle from (LED -> Actual direction) to (LED -> edge of perimeter)
-def convertAngle(alpha):
-    return alpha + angleToDirection + angleNorth
+    count = 0
+    start = False
+    for i in perimeter:
+        if i.color == color1 or i.color == color2:
+            start = True
+        if start:
+            count += 1
+    return count == 1 or count == len(perimeter)
 
 # Rotate the angle in a counter-clockwise way
 def rotateAngle(alpha):
     if alpha + 45 > 180:
         alpha -= 360
     return alpha + 45
-
-# Rectangle triangle to ease computations
-class Triangle:
-
-    # with alph the angle from actual direction to LED
-    def __init__(self, data):
-        # angle from the point we try to find the location
-        self.angleP = convertAngle(data.angle)
-        # corner of the perimeter
-        self.point = data.led.point
-        self.color = data.led.color
-        # offset to the standard direction
-        self.offset = 0
-
-    # angle from the led at a corner of the perimeter
-    def cornerAngle(self):
-        return 90.0 - self.angleP
-
-    def __str__(self):
-        return "TRIANGLE(%s ;%s)"%(self.angleP, self.cornerAngle())
 
 def adjustAngles(triangle1, triangle2):
     while abs(triangle1.angleP) + abs(triangle2.angleP) > 90:
@@ -275,8 +280,10 @@ def computeDistFromAngles(triangle1, triangle2):
 
 def compute2Data(data1, data2):
     (dist1, dist2) = computeDistFromAngles(Triangle(data1), Triangle(data2))
-    # TODO : Complete this function
-    print("1: {}, 2: {}".format(dist1, dist2))
+    data1.adjustDistance(dist1)
+    data2.adjustDistance(dist2)
+    res = getPos2Dist(data1, data2)
+    return filterPoints(res, perimeter)
 
 if __name__ == '__main__':
     print(getPos3Dist(data1, data2, data3))
