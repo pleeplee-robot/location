@@ -70,7 +70,7 @@ The direction D is the direction of the robot at initialisation.
 """
 import math
 from enum import Enum
-from geometry import Point, Triangle
+from geometry import Point, Triangle, rotateAngle
 
 # Globals Datas: (For the moment most of them are dummies)
 # position is in meter
@@ -251,12 +251,13 @@ def isAdjacent(color1, color2):
             count += 1
     return count == 1 or count == len(perimeter)
 
-# Rotate the angle in a counter-clockwise way
-def rotateAngle(alpha):
-    if alpha + 45 > 180:
-        alpha -= 360
-    return alpha + 45
-
+# When the vectors are not known the best way to have a rectangle
+# triangle is to rotate the angles until we are in between them.
+# This condition transalate itself into the sum of the absolute
+# value of the angle is below or equal 90 degree.
+# This algorithm only works because we suppose that the user has
+# properly initialized the robot facing a side. As this case only happens
+# when the perimeter is a perfect rectangle, we obtain rectangle triangles.
 def adjustAngles(triangle1, triangle2):
     while abs(triangle1.angleP) + abs(triangle2.angleP) > 90:
         triangle1.angleP = rotateAngle(triangle1.angleP)

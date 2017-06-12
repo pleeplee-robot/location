@@ -24,10 +24,9 @@ class Point:
     def __eq__(self, other):
         return self.distance(other) < self._threshold
 
-# Rectangle triangle to ease computations
+# Rectangle triangle
 class Triangle:
 
-    # with alph the angle from actual direction to LED
     def __init__(self, data):
         # angle from the point we try to find the location
         self.angleP = data.angle
@@ -44,4 +43,10 @@ class Triangle:
     def __str__(self):
         return "TRIANGLE(%s ;%s)"%(self.angleP, self.cornerAngle())
 
+# Rotate the angle in a counter-clockwise way in degree for angles between
+# -180 and 180 degree.
+def rotateAngle(alpha):
+    if alpha + 45 > 180:
+        alpha -= 360
+    return alpha + 45
 
