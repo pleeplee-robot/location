@@ -3,7 +3,7 @@
 We are three students soon-to-be system and embeded engineers.
 PleePlee is a small gardener robot we are building for our master's project.
 
-# Location
+## Location
 
 This repository is about the location of the robot. The robot will be able to
 move in a predefined area delimited at each corner by luminous landmark.
@@ -15,3 +15,14 @@ The location is estimated with multiple datas:
   - the angle between the axis of the robot and each landmark
   - the position of the north
   - odometry
+
+## TODO
+
+* Compute location
+  * [ ] Complete the algorithm for non adjacent points
+  * [~] Calculation of the angles with the vectors
+  * [ ] Synthetize the computations for 3 and 4 points
+  * [ ] Odometry
+  * [ ] Height parameter for the LEDs
+  * [ ] Unit tests & test suite
+  * [ ] Clean repo
