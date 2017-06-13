@@ -1,7 +1,7 @@
 """
 This file contains the geometry concepts needed for the computations.
 """
-import math
+from math import sqrt, radians, cos, sin, degrees, acos
 
 PRECISION = 4
 class Point:
@@ -19,10 +19,13 @@ class Point:
     def distance(self, other):
         dx = self.X - other.X
         dy = self.Y - other.Y
-        return round(math.sqrt(dx**2 + dy**2), PRECISION)
+        return round(sqrt(dx**2 + dy**2), PRECISION)
 
     def __eq__(self, other):
         return self.distance(other) < self._threshold
+
+    def minus(self, other):
+        return (self.X - other.X, self.Y - other.Y)
 
 # Rectangle triangle
 class Triangle:
@@ -50,3 +53,21 @@ def rotateAngle(alpha):
         alpha -= 360
     return alpha + 45
 
+# Rotate a vector in a plane by an angle alpha in degree.
+# The formula is obtained by multiplying the rotation matrix with
+# the vector(x, y)
+def rotateVector(vect, alpha):
+    (x, y) = vect
+    u = x * cos(radians(alpha)) + y * sin(radians(alpha))
+    v = y * cos(radians(alpha)) - x * sin(radians(alpha))
+    return (u, v)
+
+# Function to get the angle beween two vectors
+def angleBetween2Vects(vect1, vect2):
+    (x1, y1) = vect1
+    (x2, y2) = vect2
+    dotprod = x1 * x2 + y1 * y2
+    length1 = sqrt(x1 * x1 + y1 * y1)
+    length2 = sqrt(x2 * x2 + y2 * y2)
+    cosAngle = dotprod / (length1 * length2)
+    return degrees(acos(cosAngle))
