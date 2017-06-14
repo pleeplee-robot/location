@@ -20,9 +20,7 @@ The location is estimated with multiple datas:
 
 * Compute location
   * [ ] Complete the algorithm for non adjacent points
-  * [~] Calculation of the angles with the vectors
+  * [X] Calculation of the angles with the vectors
   * [ ] Synthetize the computations for 3 and 4 points
   * [ ] Odometry
   * [ ] Height parameter for the LEDs
-  * [ ] Unit tests & test suite
-  * [ ] Clean repo

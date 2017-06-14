@@ -69,9 +69,9 @@ The direction D is the direction of the robot at initialisation.
 
 """
 import math
-from enum import Enum
-from geometry import Point, Triangle, rotateAngle, rotateVector, \
-        angleBetween2Vects
+from utils import Color
+from geometry import (Point, Triangle, rotateAngle, rotateVector,
+        angleBetween2Vects)
 
 # Globals Datas: (For the moment most of them are dummies)
 # position is in meter
@@ -98,13 +98,6 @@ dirInit = (0, 10)
 # This data can be harvested in real time with a magnetic captor
 # for now we will keep this fake value
 angleToDirection = 35.0
-
-class Color(Enum):
-    NONE = 0
-    RED = 1
-    GREEN = 2
-    BLUE = 3
-    YELLOW = 4
 
 class LED:
 
@@ -317,18 +310,18 @@ def distFromAnglesNoRectangle(data1, data2):
     vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), 90)
     data1.angle = angleBetween2Vects(vectPerpendicular, vect1)
     data2.angle = angleBetween2Vects(vectPerpendicular, vect2)
-    return computeDistFromAngles(Triangle(data1), Triangle(data2))
+    triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
+    triangle2 = Triangle(data2.angle, data2.led.point, data2.led.color)
+    return computeDistFromAngles(triangle1, triangle2)
 
 def compute2Data(data1, data2):
     if RECTANGLE_MODE:
-        (dist1, dist2) = computeDistFromAngles(Triangle(data1), Triangle(data2))
+        triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
+        triangle2 = Triangle(data2.angle, data2.led.point, data2.led.color)
+        (dist1, dist2) = computeDistFromAngles(triangle1, triangle2)
     else:
         (dist1, dist2) = distFromAnglesNoRectangle(data1, data2)
     data1.adjustDistance(dist1)
     data2.adjustDistance(dist2)
     res = getPos2Dist(data1, data2)
     return filterPoints(res, perimeter)
-
-if __name__ == '__main__':
-    print(getPos3Dist(data1, data2, data3))
-    compute2Data(data1, data2)

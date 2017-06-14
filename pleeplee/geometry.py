@@ -30,12 +30,12 @@ class Point:
 # Rectangle triangle
 class Triangle:
 
-    def __init__(self, data):
+    def __init__(self, angle, point, color):
         # angle from the point we try to find the location
-        self.angleP = data.angle
+        self.angleP = angle
         # corner of the perimeter
-        self.point = data.led.point
-        self.color = data.led.color
+        self.point = point
+        self.color = color
         # offset to the standard direction
         self.offset = 0
 

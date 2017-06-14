@@ -1,0 +1,6 @@
+#
+####### requirements.txt #######
+#
+###### Requirements for the location of the PleePlee-robot project ######
+opencv-python
+pytest
