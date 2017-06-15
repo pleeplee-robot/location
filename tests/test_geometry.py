@@ -35,3 +35,18 @@ def test_triangle_corner():
     # The triangle must be rectangle. Sum of the angles of triangle = 180 degree
     assert triangle.angleP + triangle.cornerAngle() + 90 == 180
 
+def test_rotate_angle():
+    assert rotateAngle(34.89) == 34.89 + 45
+    assert rotateAngle(-179.34) == -179.34 + 45
+    assert rotateAngle(169.28) == 169.28 - 360 + 45
+
+def test_rotate_vector_simple():
+    assert rotateVector((10.0, 0.0), -90) == (0, 10)
+    val = round(5 * sqrt(2), PRECISION)
+    assert rotateVector((10.0, 0.0), -45) == (val, val)
+    assert rotateVector((10.0, 0.0), 45) == (val, -val)
+
+def test_angle_two_vects():
+    assert angleBetween2Vects((10, 0), (0, 10)) == 90
+    val = round(5 * sqrt(2), PRECISION)
+    assert angleBetween2Vects((10, 0), (val, -val)) == -45

@@ -1,9 +1,9 @@
 """
 This file contains the geometry concepts needed for the computations.
 """
-from math import sqrt, radians, cos, sin, degrees, acos
+from math import sqrt, radians, cos, sin, degrees, atan2
 
-PRECISION = 4
+PRECISION = 3
 class Point:
 
     # Thresold to determine that two points are similar (distance < 15cm)
@@ -54,20 +54,19 @@ def rotateAngle(alpha):
     return alpha + 45
 
 # Rotate a vector in a plane by an angle alpha in degree.
+# The rotation is clockwise.
 # The formula is obtained by multiplying the rotation matrix with
 # the vector(x, y)
 def rotateVector(vect, alpha):
     (x, y) = vect
-    u = x * cos(radians(alpha)) + y * sin(radians(alpha))
-    v = y * cos(radians(alpha)) - x * sin(radians(alpha))
+    u = round(x * cos(radians(alpha)) + y * sin(radians(alpha)), PRECISION)
+    v = round(y * cos(radians(alpha)) - x * sin(radians(alpha)), PRECISION)
     return (u, v)
 
-# Function to get the angle beween two vectors
+# Function to get the angle beween two vectors.
+# The angle obtained respect the angle convention detailled in compute.py
 def angleBetween2Vects(vect1, vect2):
     (x1, y1) = vect1
     (x2, y2) = vect2
-    dotprod = x1 * x2 + y1 * y2
-    length1 = sqrt(x1 * x1 + y1 * y1)
-    length2 = sqrt(x2 * x2 + y2 * y2)
-    cosAngle = dotprod / (length1 * length2)
-    return degrees(acos(cosAngle))
+    angle = atan2(y2, x2) - atan2(y1, x1)
+    return round(degrees(angle), PRECISION)

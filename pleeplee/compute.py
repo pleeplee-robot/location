@@ -296,18 +296,20 @@ def vectorFromColors(led1, led2):
 
 # Distance from angles when RECTANGLE_MODE is false
 # The computation is done with vectors
+# the minus before the angle of rotateVector is necessary because the
+# angles are counter clockwise by convention however the rotation is clockwise
 def distFromAnglesNoRectangle(data1, data2):
     if not isAdjacent(data1.led.color, data2.led.color):
         # TODO Opposite sides algorithm
         pass
-    vectNorth = rotateVector(dirInit, angleNorth)
-    actualVector = rotateVector(vectNorth, angleToDirection)
-    vect1 = rotateVector(actualVector, data1.angle)
-    vect2 = rotateVector(actualVector, data2.angle)
+    vectNorth = rotateVector(dirInit, -angleNorth)
+    actualVector = rotateVector(vectNorth, -angleToDirection)
+    vect1 = rotateVector(actualVector, -data1.angle)
+    vect2 = rotateVector(actualVector, -data2.angle)
     # By convention we choose the vectors of the sides in a clockwise
     # way if they are adjacent. We will then only need a rotation in a counter
     # clockwise way to always have a vector facing the outside of the perimeter
-    vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), 90)
+    vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), -90)
     data1.angle = angleBetween2Vects(vectPerpendicular, vect1)
     data2.angle = angleBetween2Vects(vectPerpendicular, vect2)
     triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
