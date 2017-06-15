@@ -102,3 +102,6 @@ ENV/
 
 # vim
 *.swp
+
+# pytest
+failures

@@ -146,10 +146,8 @@ class Data:
             self.distance = dist
         else:
             self.distance = (self.distance + dist) / 2
+        return self.distance
 
-data1 = Data(Color.RED, 55.0, 3.8)
-data2 = Data(Color.GREEN, -35.0, 9.4)
-data3 = Data(Color.YELLOW, 115.58, 7.0)
 
 def getPos2Dist(data1, data2):
 
@@ -235,12 +233,15 @@ def getPos3Dist(data1, data2, data3):
 
 def isAdjacent(color1, color2):
     if color1 == color2:
-        return false;
+        return False;
     count = 0
     start = False
     for i in perimeter:
         if i.color == color1 or i.color == color2:
-            start = True
+            if not start:
+                start = True
+            else:
+                break
         if start:
             count += 1
     return count == 1 or count == len(perimeter)
