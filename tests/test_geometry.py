@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from pleeplee.geometry import (Point, Triangle, rotateAngle, rotateVector,
         angleBetween2Vects, PRECISION)
 from pleeplee.utils import Color

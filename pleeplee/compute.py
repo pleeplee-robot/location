@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 This file contains the computation of all datas recieved by the robot to
 find the robot position in the given perimeter.
@@ -72,6 +74,7 @@ import math
 from utils import Color
 from geometry import (Point, Triangle, rotateAngle, rotateVector,
         angleBetween2Vects)
+from itertools import count
 
 # Globals Datas: (For the moment most of them are dummies)
 # position is in meter
@@ -125,9 +128,14 @@ def _getLED(color):
             return i
     raise ValueError('Color not found')
 
+# Data is the class that enable us to track the data set sent by the camera.
 class Data:
+    _ids = count(0)
 
     def __init__(self, color, angle, distance=None):
+        # Intances counter: This variable enable us to track the order
+        # of initialisation of the datas.
+        self.id = next(self._ids)
         # Convert angle from (LED -> Actual direction) to
         # (LED -> edge of perimeter)
         self.angle = angle + angleToDirection + angleNorth
@@ -266,6 +274,8 @@ def computeDistFromAngles(triangle1, triangle2):
         # TODO Opposite sides algorithm
         pass
     adjustAngles(triangle1, triangle2)
+    if triangle1.angleP < triangle2.angleP:
+        triangle1, triangle2 = triangle2, triangle1
     distance = abs(triangle1.point.distance(triangle2.point))
     x = distance / (1 + math.tan(math.radians(abs(triangle2.angleP))) /
             math.tan(math.radians(abs(triangle1.angleP))))
@@ -285,13 +295,15 @@ def vectorFromColors(led1, led2):
     firstColorInFirst = True
     for i in perimeter:
         if i.color == led1.color or i.color == led2.color:
+            if start:
+                break
             start = True
             firstColorInFirst = True if i.color == led1.color else False
         if start:
             count += 1
     if count == len(perimeter):
-        firstColInFirst = True if firstColorInFirst else False
-    return (led2.point.minus(led1.point) if firstColInFirst
+        firstColInFirst = not firstColorInFirst
+    return (led2.point.minus(led1.point) if firstColorInFirst
                     else led1.point.minus(led2.point))
 
 
@@ -303,20 +315,21 @@ def distFromAnglesNoRectangle(data1, data2):
     if not isAdjacent(data1.led.color, data2.led.color):
         # TODO Opposite sides algorithm
         pass
-    vectNorth = rotateVector(dirInit, -angleNorth)
-    actualVector = rotateVector(vectNorth, -angleToDirection)
-    vect1 = rotateVector(actualVector, -data1.angle)
-    vect2 = rotateVector(actualVector, -data2.angle)
+    vectNorth = rotateVector(dirInit, angleNorth)
+    actualVector = rotateVector(vectNorth, angleToDirection)
+    vect1 = rotateVector(actualVector, data1.angle)
+    vect2 = rotateVector(actualVector, data2.angle)
     # By convention we choose the vectors of the sides in a clockwise
     # way if they are adjacent. We will then only need a rotation in a counter
     # clockwise way to always have a vector facing the outside of the perimeter
-    vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), -90)
+    vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), 90)
     data1.angle = angleBetween2Vects(vectPerpendicular, vect1)
     data2.angle = angleBetween2Vects(vectPerpendicular, vect2)
     triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
     triangle2 = Triangle(data2.angle, data2.led.point, data2.led.color)
     return computeDistFromAngles(triangle1, triangle2)
 
+# Final synthetizing of all the datas related to 2 points and computing
 def compute2Data(data1, data2):
     if RECTANGLE_MODE:
         triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
