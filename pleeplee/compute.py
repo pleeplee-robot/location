@@ -223,24 +223,9 @@ def filterPoints(solutions, corners):
     return [value for value in solutions if value.X < Xmax and value.X > Xmin
             and value.Y < Ymax and value.Y > Ymin]
 
-# This function is due to be replaced by a better one that will
-# synthetize all the other datas
-def getPos3Dist(data1, data2, data3):
-    res = getPos2Dist(data1, data2)
-    res = filterPoints(res, perimeter)
-    if len(res) == 0:
-        return None
-    if len(res) == 1:
-        return res[0]
-    res2 = getPos2Dist(data2, data3)
-    res2 = filterPoints(res2, perimeter)
-    for i in res:
-        if i in res2:
-            return i;
-    return None
-
 def isAdjacent(color1, color2):
     if color1 == color2:
+        print("merde")
         return False;
     count = 0
     start = False
