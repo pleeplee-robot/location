@@ -1,11 +1,11 @@
 REQUIREMENTS=requirements.txt
 TRASH=**/*.pyc tests/__pycache__ failures
 
-init:
-	    pip install -r $(REQUIREMENTS)
-
 check:
 	    pytest
+
+init:
+	    pip install -r $(REQUIREMENTS)
 
 clean:
 	rm -rf $(TRASH)

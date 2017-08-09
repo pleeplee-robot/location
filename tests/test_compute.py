@@ -12,6 +12,7 @@ from pleeplee.utils import Color
 
 
 # Data needed for Mocks:
+# Test data set 1
 corner1 = LED(Color.RED, Point(0.0, 0.0))
 corner2 = LED(Color.YELLOW, Point(0.0, 10.0))
 corner3 = LED(Color.BLUE, Point(10.0, 10.0))
@@ -95,9 +96,31 @@ def test_dist_from_angles_no_rectangle():
     data1 = Data(Color.RED, 55.0)
     data2 = Data(Color.GREEN, -35.0)
     (x, y) = distFromAnglesNoRectangle(data1, data2)
-    errorMargin = 0.5 # 20cm
+    errorMargin = 0.3 # 30cm
     assert abs(x - 3.7) < errorMargin
     assert abs(y - 9.2) < errorMargin
 
 def test_compute_2_data():
     pass # TODO
+
+# Test data set 1
+corner1_t2 = LED(Color.RED, Point(3.0, 5.0))
+corner2_t2 = LED(Color.YELLOW, Point(13.0, 5.0))
+corner3_t2 = LED(Color.BLUE, Point(11.0, 9.0))
+corner4_t2 = LED(Color.GREEN, Point(1.0, 10.0))
+
+testPerimeter2 = [corner1_t2, corner2_t2, corner3_t2, corner4_t2]
+
+@patch('pleeplee.compute.perimeter', testPerimeter2)
+@patch('pleeplee.compute.dirInit', (-10.0, -10.0))
+@patch('pleeplee.compute.angleNorth', -45.0)
+@patch('pleeplee.compute.angleToDirection', -90.0)
+def test_dist_from_angles_no_rectangle_2():
+    data1 = Data(Color.YELLOW, 19.0)
+    data2 = Data(Color.BLUE, -25.0)
+    (x, y) = distFromAnglesNoRectangle(data1, data2)
+    errorMargin = 0.04 # 4cm
+    assert abs(x - 6.4) < errorMargin
+    assert abs(y - 4.5) < errorMargin
+
+

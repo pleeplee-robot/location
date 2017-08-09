@@ -33,18 +33,18 @@ The second mode is when the perimeter of the garden is not a perfect rectangle
 or that they are more than 4 LED landmarks.
 
  The map will have the following conventions:
-  Y(0, 10)                                  B(10, 10)
-       _____________________________________
-      |                                     |
-      |                                     |
-      |                                     |
-      |                                     |
-      |                                     |
-      |                                     |
-      |                                     |
-      |                                     |
-       _____________________________________
   R(0, 0)                                   G(10, 0)
+       _____________________________________
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+      |                                     |
+       _____________________________________
+  y(0, 10)                                  B(10, 10)
 
 Where the lower-left most landmark is (0, 0) and the other coordinates
 are
@@ -277,12 +277,20 @@ def computeDistFromAngles(triangle1, triangle2):
     if triangle1.angleP < triangle2.angleP:
         triangle1, triangle2 = triangle2, triangle1
     distance = abs(triangle1.point.distance(triangle2.point))
-    x = distance / (1 + math.tan(math.radians(abs(triangle2.angleP))) /
-            math.tan(math.radians(abs(triangle1.angleP))))
-    y = distance - x
-    d1 = x / math.sin(math.radians(abs(triangle1.angleP)))
-    d2 = y / math.sin(math.radians(abs(triangle2.angleP)))
-    return (d1, d2)
+    # if the two angles have different signs their product will de negative
+    if triangle1.angleP * triangle2.angleP < 0:
+        x = distance / (1 + math.tan(math.radians(abs(triangle2.angleP))) /
+                math.tan(math.radians(abs(triangle1.angleP))))
+        y = distance - x
+        d1 = x / math.sin(math.radians(abs(triangle1.angleP)))
+        d2 = y / math.sin(math.radians(abs(triangle2.angleP)))
+        return (d1, d2)
+    else:
+        diff = math.radians(abs(triangle1.angleP - triangle2.angleP))
+        x = distance * math.cos(math.radians(triangle2.angleP)) / math.sin(diff)
+        y = distance * math.cos(math.radians(triangle1.angleP)) / math.sin(diff)
+        return (x, y)
+
 
 # Get the clockwise vector from two LEDs color in the perimeter
 def vectorFromColors(led1, led2):
@@ -317,14 +325,15 @@ def distFromAnglesNoRectangle(data1, data2):
         pass
     vectNorth = rotateVector(dirInit, angleNorth)
     actualVector = rotateVector(vectNorth, angleToDirection)
-    vect1 = rotateVector(actualVector, data1.angle)
-    vect2 = rotateVector(actualVector, data2.angle)
+    vect1 = rotateVector(dirInit, data1.angle)
+    vect2 = rotateVector(dirInit, data2.angle)
     # By convention we choose the vectors of the sides in a clockwise
     # way if they are adjacent. We will then only need a rotation in a counter
     # clockwise way to always have a vector facing the outside of the perimeter
     vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), 90)
-    data1.angle = angleBetween2Vects(vectPerpendicular, vect1)
-    data2.angle = angleBetween2Vects(vectPerpendicular, vect2)
+    data1.angle = angleBetween2Vects(vect1, vectPerpendicular)
+    data2.angle = angleBetween2Vects(vect2, vectPerpendicular)
+    # FIXME here call triangle but not rectangle
     triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
     triangle2 = Triangle(data2.angle, data2.led.point, data2.led.color)
     return computeDistFromAngles(triangle1, triangle2)
