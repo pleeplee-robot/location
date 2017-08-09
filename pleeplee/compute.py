@@ -268,11 +268,9 @@ def adjustAngles(triangle1, triangle2):
         triangle1.offset += 1
         triangle2.offset += 1
 
-# the two triangle P point must be the same
+# the two triangle P point must be the same and the triangles must be rectangle
+# the angleP given are supposed correct in all cases
 def computeDistFromAngles(triangle1, triangle2):
-    if not isAdjacent(triangle1.color, triangle2.color):
-        # TODO Opposite sides algorithm
-        pass
     adjustAngles(triangle1, triangle2)
     if triangle1.angleP < triangle2.angleP:
         triangle1, triangle2 = triangle2, triangle1
@@ -293,10 +291,10 @@ def computeDistFromAngles(triangle1, triangle2):
 
 
 # Get the clockwise vector from two LEDs color in the perimeter
+# the arguments should be given from left to right in the scope of the camera.
 def vectorFromColors(led1, led2):
     if not isAdjacent(led1.color, led2.color):
-        # TODO Opposite sides algorithm
-        pass
+        return led2.point.minus(led1.point)
     count = 0
     start = False
     # Boolean: True if the color1
@@ -319,10 +317,12 @@ def vectorFromColors(led1, led2):
 # The computation is done with vectors
 # the minus before the angle of rotateVector is necessary because the
 # angles are counter clockwise by convention however the rotation is clockwise
+# in order to correctly compute non adjacent LEDs the order of the input
+# datas is important. They must be in the order as seen by the camera
+# from left to right. This ensure that the robot will always be on the
+# adequate side of the area and the vectPerpendicular calculus will
+# be correct.
 def distFromAnglesNoRectangle(data1, data2):
-    if not isAdjacent(data1.led.color, data2.led.color):
-        # TODO Opposite sides algorithm
-        pass
     vectNorth = rotateVector(dirInit, angleNorth)
     actualVector = rotateVector(vectNorth, angleToDirection)
     vect1 = rotateVector(dirInit, data1.angle)
@@ -333,7 +333,6 @@ def distFromAnglesNoRectangle(data1, data2):
     vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), 90)
     data1.angle = angleBetween2Vects(vect1, vectPerpendicular)
     data2.angle = angleBetween2Vects(vect2, vectPerpendicular)
-    # FIXME here call triangle but not rectangle
     triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
     triangle2 = Triangle(data2.angle, data2.led.point, data2.led.color)
     return computeDistFromAngles(triangle1, triangle2)

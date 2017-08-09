@@ -19,7 +19,7 @@ The location is estimated with multiple datas:
 ## TODO
 
 * Compute location
-  * [ ] Complete the algorithm for non adjacent points
+  * [X] Complete the algorithm for non adjacent points
   * [X] Calculation of the angles with the vectors
   * [ ] Synthetize the computations for 3 and 4 points
   * [ ] Odometry
