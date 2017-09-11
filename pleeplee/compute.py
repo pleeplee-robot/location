@@ -203,6 +203,7 @@ def getPos2Dist(data1, data2):
         I1, I2 = I2, I1
     return [I1, I2]
 
+# remove solutions if they are not whithin the perimeter
 def filterPoints(solutions, corners):
 
     Xmin = corners[0].point.X
@@ -247,7 +248,14 @@ def isAdjacent(color1, color2):
 # properly initialized the robot facing a side. As this case only happens
 # when the perimeter is a perfect rectangle, we obtain rectangle triangles.
 def adjustAngles(triangle1, triangle2):
-    while abs(triangle1.angleP) + abs(triangle2.angleP) > 90:
+    # in case the perimeter is not a square the lim can be > 90
+    lim = 90
+    while abs(triangle1.angleP) + abs(triangle2.angleP) > lim:
+        if triangle1.offset >= 4:
+            lim += 10
+            triangle1.offset = 0
+            triangle2.offset = 0
+            continue
         triangle1.angleP = rotateAngle(triangle1.angleP)
         triangle2.angleP = rotateAngle(triangle2.angleP)
         triangle1.offset += 1
@@ -256,7 +264,8 @@ def adjustAngles(triangle1, triangle2):
 # the two triangle P point must be the same and the triangles must be rectangle
 # the angleP given are supposed correct in all cases
 def computeDistFromAngles(triangle1, triangle2):
-    adjustAngles(triangle1, triangle2)
+    if RECTANGLE_MODE:
+        adjustAngles(triangle1, triangle2)
     if triangle1.angleP < triangle2.angleP:
         triangle1, triangle2 = triangle2, triangle1
     distance = abs(triangle1.point.distance(triangle2.point))
@@ -269,7 +278,11 @@ def computeDistFromAngles(triangle1, triangle2):
         d2 = y / math.sin(math.radians(abs(triangle2.angleP)))
         return (d1, d2)
     else:
-        diff = math.radians(abs(triangle1.angleP - triangle2.angleP))
+        diff = math.radians(abs(triangle1.angleP) - abs(triangle2.angleP))
+        ret = math.sin(diff)
+        if ret == 0.0:
+            print("oooops")
+            return (0, 0)
         x = distance * math.cos(math.radians(triangle2.angleP)) / math.sin(diff)
         y = distance * math.cos(math.radians(triangle1.angleP)) / math.sin(diff)
         return (x, y)
@@ -316,10 +329,10 @@ def distFromAnglesNoRectangle(data1, data2):
     # way if they are adjacent. We will then only need a rotation in a counter
     # clockwise way to always have a vector facing the outside of the perimeter
     vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), 90)
-    data1.angle = angleBetween2Vects(vect1, vectPerpendicular)
-    data2.angle = angleBetween2Vects(vect2, vectPerpendicular)
-    triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
-    triangle2 = Triangle(data2.angle, data2.led.point, data2.led.color)
+    angle1 = angleBetween2Vects(vect1, vectPerpendicular)
+    angle2 = angleBetween2Vects(vect2, vectPerpendicular)
+    triangle1 = Triangle(angle1, data1.led.point, data1.led.color)
+    triangle2 = Triangle(angle2, data2.led.point, data2.led.color)
     return computeDistFromAngles(triangle1, triangle2)
 
 # Final synthetizing of all the datas related to 2 points and computing
@@ -334,3 +347,31 @@ def compute2Data(data1, data2):
     data2.adjustDistance(dist2)
     res = getPos2Dist(data1, data2)
     return filterPoints(res, perimeter)
+
+def compute3Data(data1, data2, data3):
+    res1 = compute2Data(data1, data2)
+    res2 = compute2Data(data2, data3)
+    res3 = compute2Data(data1, data3)
+    res = res1 + res2 + res3
+    return res
+
+def hasManyOccurencies(elt, listx):
+    _threshold = 80.0
+    count = 0
+    for i in listx:
+        if elt == i:
+            count += 1
+    goodPercent = count * 100 / len(listx)
+    print(goodPercent)
+    return goodPercent >= _threshold
+
+
+def sortData(data_array):
+    data_array = [x for x in data_array if hasManyOccurencies(x, data_array)]
+    x = 0.0
+    y = 0.0
+    for i in data_array:
+        x += i.X
+        y += i.Y
+    return Point(x / len(data_array), y / len(data_array))
+

@@ -9,7 +9,7 @@ PRECISION = 3
 class Point:
 
     # Thresold to determine that two points are similar (distance < 15cm)
-    _threshold = 0.15
+    _threshold = 0.1
 
     def __init__(self, x, y):
         self.X = x
@@ -24,10 +24,12 @@ class Point:
         return round(sqrt(dx**2 + dy**2), PRECISION)
 
     def __eq__(self, other):
-        return self.distance(other) < self._threshold
+        return (abs(self.X - other.X) < self._threshold
+                and abs(self.Y - other.Y) < self._threshold)
 
     def minus(self, other):
         return (self.X - other.X, self.Y - other.Y)
+
 
 # Rectangle triangle
 class Triangle:
