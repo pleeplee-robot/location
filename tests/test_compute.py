@@ -136,3 +136,13 @@ def test_compute_3_data():
     errorMargin = 0.1 # 10cm
     assert abs(res[0].X - 7.0) < errorMargin
     assert abs(res[0].Y - 7.0) < errorMargin
+
+def test_has_many_occurencies():
+    my_list = [ Point(6.92, 5.78), Point(6.99, 5.81), Point(6.96, 5.80) ]
+    ref = Point(7.0, 5.8)
+    assert hasManyOccurencies(ref, my_list)
+
+def test_sort_data():
+    my_list = [ Point(6.92, 5.78), Point(6.99, 5.81), Point(6.96, 5.80) ]
+    ref = Point(7.0, 5.8)
+    assert sortData(my_list) == ref

@@ -101,6 +101,7 @@ class LED:
     def __str__(self):
         return "LED(Position: %s ;Color : %s )"%(self.point, self.color)
 
+
 # the map is represented by 4 leds positionned at each corner of the area
 # available to the robot the corners must be inserted in a clockwise way
 
@@ -116,6 +117,7 @@ def _getLED(color):
         if i.color == color:
             return i
     raise ValueError('Color not found')
+
 
 # Data is the class that enable us to track the data set sent by the camera.
 class Data:
@@ -192,6 +194,7 @@ def getPos2Dist(data1, data2):
         I1, I2 = I2, I1
     return [I1, I2]
 
+
 # remove solutions if they are not whithin the perimeter
 def filterPoints(solutions, corners):
 
@@ -213,6 +216,7 @@ def filterPoints(solutions, corners):
     return [value for value in solutions if value.X < Xmax and value.X > Xmin
             and value.Y < Ymax and value.Y > Ymin]
 
+
 def isAdjacent(color1, color2):
     if color1 == color2:
         print("merde")
@@ -228,6 +232,7 @@ def isAdjacent(color1, color2):
         if start:
             count += 1
     return count == 1 or count == len(perimeter)
+
 
 # Get the clockwise vector from two LEDs color in the perimeter
 # the arguments should be given from left to right in the scope of the camera.
@@ -296,6 +301,7 @@ def distFromAnglesNoRectangle(data1, data2):
         y = distance * math.cos(math.radians(triangle1.angleP)) / math.sin(diff)
         return (x, y)
 
+
 # Final synthetizing of all the datas related to 2 points and computing
 def compute2Data(data1, data2):
     (dist1, dist2) = distFromAnglesNoRectangle(data1, data2)
@@ -304,12 +310,14 @@ def compute2Data(data1, data2):
     res = getPos2Dist(data1, data2)
     return filterPoints(res, perimeter)
 
+
 def compute3Data(data1, data2, data3):
     res1 = compute2Data(data1, data2)
     res2 = compute2Data(data2, data3)
     res3 = compute2Data(data1, data3)
     res = res1 + res2 + res3
     return res
+
 
 def hasManyOccurencies(elt, listx):
     _threshold = 80.0
