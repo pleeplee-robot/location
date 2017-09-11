@@ -1,3 +1,9 @@
+#######################################################
+# AUTHOR  : Ashkan Kiaie-Sandjie                      #
+# SUMMARY : Contain the logic to calibrate the camera #
+#           and get distances to objects              #
+#######################################################
+
 import numpy as np
 import argparse
 import cv2

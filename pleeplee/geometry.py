@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-"""
-This file contains the geometry concepts needed for the computations.
-"""
+##########################################################
+# AUTHOR  : Loïc Banet                                   #
+# SUMMARY : Contain the geometry concepts needed for the #
+#           computations                                 #
+##########################################################
+
 from math import sqrt, radians, cos, sin, degrees, atan2
 
 PRECISION = 3

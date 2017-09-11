@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+##################################################
+# AUTHOR  : Loïc Banet                           #
+# SUMMARY : Contain enum class that define color #
+##################################################
+
 from enum import Enum
 
 class Color(Enum):

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+#########################################################
+# AUTHOR  : Loïc Banet                                  #
+# SUMMARY : Contain computation logics of several data #
+#           related to the robot location               #
+#########################################################
+
 """
 This file contains the computation of all datas recieved by the robot to
 find the robot position in the given perimeter.
@@ -338,4 +344,3 @@ def sortData(data_array):
         x += i.X
         y += i.Y
     return Point(x / len(data_array), y / len(data_array))
-
