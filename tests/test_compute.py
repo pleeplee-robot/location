@@ -25,12 +25,14 @@ def test_data_adjust_distance():
     assert data1.adjustDistance(6.8) == 9.6
     assert data2.adjustDistance(6.8) == 6.8
 
+
 @patch('pleeplee.compute.perimeter', testPerimeter1)
 def test_pos_2_dist_none():
     data1 = Data(Color.RED, 38.45, 12.4)
     data2 = Data(Color.RED, 38.45)
     with pytest.raises(ValueError):
         getPos2Dist(data1, data2)
+
 
 @patch('pleeplee.compute.perimeter', testPerimeter1)
 def test_pos_2_dist_no_solution():
@@ -45,6 +47,7 @@ def test_pos_2_dist_no_solution():
     assert getPos2Dist(data1, data2) == []
     assert getPos2Dist(data1, data3) == []
 
+
 @patch('pleeplee.compute.perimeter', testPerimeter1)
 def test_pos_2_dist_easy():
     data1 = Data(Color.RED, 55.0, 3.8)
@@ -53,39 +56,26 @@ def test_pos_2_dist_easy():
     assert len(res) == 2
     assert Point(1.3, 3.5) in res
 
+
 @patch('pleeplee.compute.perimeter', testPerimeter1)
 def test_filter_point():
     res = filterPoints([Point(1.3, 3.5), Point(1.3, -3.5)], perimeter)
     assert len(res) == 1
     assert Point(1.3, 3.5) == res[0]
 
+
 def test_is_adjacent():
     assert not isAdjacent(Color.RED, Color.RED)
     assert isAdjacent(perimeter[0].color, perimeter[1].color)
     assert not isAdjacent(perimeter[0].color, perimeter[2].color)
 
-def test_adjust_angles():
-    triangle1 = Triangle(-23.0, perimeter[0].point, perimeter[0].color)
-    triangle2 = Triangle(-113.0, perimeter[1].point, perimeter[1].color)
-    adjustAngles(triangle1, triangle2)
-    assert triangle1.offset == 1
-    assert triangle1.angleP == 22.0
-    assert triangle2.angleP == -68.0
-
-# redo this test or remove fct
-def test_compute_dist_from_angles():
-    triangle1 = Triangle(-23.0, perimeter[0].point, perimeter[0].color)
-    triangle2 = Triangle(-113.0, perimeter[1].point, perimeter[1].color)
-    (x, y) = computeDistFromAngles(triangle1, triangle2)
-    errorMargin = 0.25 # 20cm
-    assert abs(x - 3.7) < errorMargin
-    assert abs(y - 9.2) < errorMargin
 
 @patch('pleeplee.compute.perimeter', testPerimeter1)
 def test_vector_from_colors():
     assert (vectorFromColors(perimeter[0], perimeter[1]) ==
             vectorFromColors(perimeter[1], perimeter[0]))
     assert vectorFromColors(perimeter[2], perimeter[3]) == (0.0, -10.0)
+
 
 @patch('pleeplee.compute.perimeter', testPerimeter1)
 @patch('pleeplee.compute.dirInit', (10.0, 0.0))
@@ -96,6 +86,7 @@ def test_dist_from_angles_no_rectangle():
     errorMargin = 0.3 # 30cm
     assert abs(x - 3.7) < errorMargin
     assert abs(y - 9.2) < errorMargin
+
 
 # Test data set 1
 corner1_t2 = LED(Color.RED, Point(3.0, 3.0))
@@ -118,6 +109,7 @@ def test_dist_from_angles_no_rectangle_2():
     assert abs(x - 6.4) < errorMargin
     assert abs(y - 4.5) < errorMargin
 
+
 @patch('pleeplee.compute.perimeter', testPerimeter2)
 @patch('pleeplee.compute.dirInit', (-10.0, -10.0))
 @patch('pleeplee.compute.angleNorth', -45.0)
@@ -131,11 +123,12 @@ def test_compute_2_data_1():
     assert abs(res[0].X - 7.0) < errorMargin
     assert abs(res[0].Y - 7.0) < errorMargin
 
+
 @patch('pleeplee.compute.perimeter', testPerimeter2)
 @patch('pleeplee.compute.dirInit', (-10.0, -10.0))
 @patch('pleeplee.compute.angleNorth', -45.0)
 @patch('pleeplee.compute.angleToDirection', -90.0)
-def test_compute_2_data_2():
+def test_compute_3_data():
     data0_t2 = Data(Color.RED, 134.0)
     data1_t2 = Data(Color.YELLOW, 19.0)
     data2_t2 = Data(Color.BLUE, -25.0)

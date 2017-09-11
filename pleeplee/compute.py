@@ -7,7 +7,6 @@ The input datas are:
     - the map (user input the coordinate of LEDs landmarks)
     - the mode (user input, boolean true if it is a rectangle)
     - the side perpendicular to the robot direction at initialisation
-    (user input maybe ommited)
     - the angle between the direction at initialisation and the north
     (magnetic captor, one data send at initialisation)
     - the angle between the actual direction and the north
@@ -24,13 +23,6 @@ and input their coodinates and color into the API.
 Before turning on the robot for initialisation phase it has to face a side
 of the perimeter delimited by LEDs. The minimum number of LEDs landmark is 4.
 The LEDs have to be of different colors for the location to work properly.
-
-There are two different modes for the configuration of the LED disposition
-that the user can choose from.
-The first mode is to have a perfect rectangle as the perimeter of the garden.
-In this mode there is no need for more input from the user.
-The second mode is when the perimeter of the garden is not a perfect rectangle
-or that they are more than 4 LED landmarks.
 
  The map will have the following conventions:
   R(0, 0)                                   G(10, 0)
@@ -88,9 +80,6 @@ PRECISION = 4
 # This angle is a fixed data measured at the initialization of the robot.
 # The angle is between 180 and -180 degree
 angleNorth = 20.0
-
-# This variable represent the mode choosen by the user at initialisation
-RECTANGLE_MODE = False
 
 # This variable represent the direction of initialisation
 # Vector perpendicular to the side it face when initialised
@@ -240,54 +229,6 @@ def isAdjacent(color1, color2):
             count += 1
     return count == 1 or count == len(perimeter)
 
-# When the vectors are not known the best way to have a rectangle
-# triangle is to rotate the angles until we are in between them.
-# This condition transalate itself into the sum of the absolute
-# value of the angle is below or equal 90 degree.
-# This algorithm only works because we suppose that the user has
-# properly initialized the robot facing a side. As this case only happens
-# when the perimeter is a perfect rectangle, we obtain rectangle triangles.
-def adjustAngles(triangle1, triangle2):
-    # in case the perimeter is not a square the lim can be > 90
-    lim = 90
-    while abs(triangle1.angleP) + abs(triangle2.angleP) > lim:
-        if triangle1.offset >= 4:
-            lim += 10
-            triangle1.offset = 0
-            triangle2.offset = 0
-            continue
-        triangle1.angleP = rotateAngle(triangle1.angleP)
-        triangle2.angleP = rotateAngle(triangle2.angleP)
-        triangle1.offset += 1
-        triangle2.offset += 1
-
-# the two triangle P point must be the same and the triangles must be rectangle
-# the angleP given are supposed correct in all cases
-def computeDistFromAngles(triangle1, triangle2):
-    if RECTANGLE_MODE:
-        adjustAngles(triangle1, triangle2)
-    if triangle1.angleP < triangle2.angleP:
-        triangle1, triangle2 = triangle2, triangle1
-    distance = abs(triangle1.point.distance(triangle2.point))
-    # if the two angles have different signs their product will de negative
-    if triangle1.angleP * triangle2.angleP < 0:
-        x = distance / (1 + math.tan(math.radians(abs(triangle2.angleP))) /
-                math.tan(math.radians(abs(triangle1.angleP))))
-        y = distance - x
-        d1 = x / math.sin(math.radians(abs(triangle1.angleP)))
-        d2 = y / math.sin(math.radians(abs(triangle2.angleP)))
-        return (d1, d2)
-    else:
-        diff = math.radians(abs(triangle1.angleP) - abs(triangle2.angleP))
-        ret = math.sin(diff)
-        if ret == 0.0:
-            print("oooops")
-            return (0, 0)
-        x = distance * math.cos(math.radians(triangle2.angleP)) / math.sin(diff)
-        y = distance * math.cos(math.radians(triangle1.angleP)) / math.sin(diff)
-        return (x, y)
-
-
 # Get the clockwise vector from two LEDs color in the perimeter
 # the arguments should be given from left to right in the scope of the camera.
 def vectorFromColors(led1, led2):
@@ -311,7 +252,6 @@ def vectorFromColors(led1, led2):
                     else led1.point.minus(led2.point))
 
 
-# Distance from angles when RECTANGLE_MODE is false
 # The computation is done with vectors
 # the minus before the angle of rotateVector is necessary because the
 # angles are counter clockwise by convention however the rotation is clockwise
@@ -321,6 +261,7 @@ def vectorFromColors(led1, led2):
 # adequate side of the area and the vectPerpendicular calculus will
 # be correct.
 def distFromAnglesNoRectangle(data1, data2):
+
     vectNorth = rotateVector(dirInit, angleNorth)
     actualVector = rotateVector(vectNorth, angleToDirection)
     vect1 = rotateVector(dirInit, data1.angle)
@@ -333,16 +274,31 @@ def distFromAnglesNoRectangle(data1, data2):
     angle2 = angleBetween2Vects(vect2, vectPerpendicular)
     triangle1 = Triangle(angle1, data1.led.point, data1.led.color)
     triangle2 = Triangle(angle2, data2.led.point, data2.led.color)
-    return computeDistFromAngles(triangle1, triangle2)
+
+    if triangle1.angleP < triangle2.angleP:
+        triangle1, triangle2 = triangle2, triangle1
+    distance = abs(triangle1.point.distance(triangle2.point))
+    # if the two angles have different signs their product will de negative
+    if triangle1.angleP * triangle2.angleP < 0:
+        x = distance / (1 + math.tan(math.radians(abs(triangle2.angleP))) /
+                math.tan(math.radians(abs(triangle1.angleP))))
+        y = distance - x
+        d1 = x / math.sin(math.radians(abs(triangle1.angleP)))
+        d2 = y / math.sin(math.radians(abs(triangle2.angleP)))
+        return (d1, d2)
+    else:
+        diff = math.radians(abs(triangle1.angleP) - abs(triangle2.angleP))
+        ret = math.sin(diff)
+        if ret == 0.0:
+            print("oooops")
+            return (0, 0)
+        x = distance * math.cos(math.radians(triangle2.angleP)) / math.sin(diff)
+        y = distance * math.cos(math.radians(triangle1.angleP)) / math.sin(diff)
+        return (x, y)
 
 # Final synthetizing of all the datas related to 2 points and computing
 def compute2Data(data1, data2):
-    if RECTANGLE_MODE:
-        triangle1 = Triangle(data1.angle, data1.led.point, data1.led.color)
-        triangle2 = Triangle(data2.angle, data2.led.point, data2.led.color)
-        (dist1, dist2) = computeDistFromAngles(triangle1, triangle2)
-    else:
-        (dist1, dist2) = distFromAnglesNoRectangle(data1, data2)
+    (dist1, dist2) = distFromAnglesNoRectangle(data1, data2)
     data1.adjustDistance(dist1)
     data2.adjustDistance(dist2)
     res = getPos2Dist(data1, data2)
