@@ -11,12 +11,12 @@ import sys
 
 def print_distance(real_size, focal, size):
     distance = real_size * focal / size
-    print distance
+    print(distance)
     return distance
 
 def print_focal(size, distance, real_size):
     focal = size * distance / real_size
-    print focal
+    print(focal)
     return focal
 
 def get_size_of_light(keypoints, bin_image, source_image):
@@ -49,7 +49,7 @@ def get_size_of_light(keypoints, bin_image, source_image):
                 source_image[center_y + y_down, center_x] = [32, 124, 63]
                 y_down += 1
             size = (x_left + x_right + y_down + y_up - 2) / 2.0
-    print size
+    print(size)
     return size
 
 def get_keypoints_image(keypoints, source_image):
@@ -109,44 +109,44 @@ def main(argv=None):
         argv = sys.argv
     size_obj_focal = process_size("../tests/calque/3m.jpg")
     focal = print_focal(size_obj_focal, 300, 3.5)
-    print "EXPECTED 300 => "
+    print("EXPECTED 300 => ")
     print_distance(3.5, focal, size_obj_focal)
     print focal
 
     size_obj2 = process_size("../tests/calque/5m.jpg")
-    print "EXPECTED 500 => "
+    print("EXPECTED 500 => ")
     print_distance(3.5, focal, size_obj2)
 
     size_obj3 = process_size("../tests/calque/6m.jpg")
-    print "EXPECTED 600 => "
+    print("EXPECTED 600 => ")
     print_distance(3.5, focal, size_obj3)
 
     size_obj4 = process_size("../tests/calque/7m.jpg")
-    print "EXPECTED 700 => "
+    print("EXPECTED 700 => ")
     print_distance(3.5, focal, size_obj4)
 
     size_obj5 = process_size("../tests/calque/8m.jpg")
-    print "EXPECTED 800 => "
+    print("EXPECTED 800 => ")
     print_distance(3.5, focal, size_obj5)
 
     size_obj6 = process_size("../tests/calque/9m.jpg")
-    print "EXPECTED 900 => "
+    print("EXPECTED 900 => ")
     print_distance(3.5, focal, size_obj6)
 
     size_obj7 = process_size("../tests/calque/10m.jpg")
-    print "EXPECTED 1000 => "
+    print("EXPECTED 1000 => ")
     print_distance(3.5, focal, size_obj7)
 
     size_obj8 = process_size("../tests/calque/2m.jpg")
-    print "EXPECTED 200 => "
+    print("EXPECTED 200 => ")
     print_distance(3.5, focal, size_obj8)
 
     size_obj9 = process_size("../tests/calque/4m.jpg")
-    print "EXPECTED 400 => "
+    print("EXPECTED 400 => ")
     print_distance(3.5, focal, size_obj9)
 
     size_obj10 = process_size("../tests/calque/1m.jpg")
-    print "EXPECTED 100 => "
+    print("EXPECTED 100 => ")
     print_distance(3.5, focal, size_obj10)
 
 if __name__ == "__main__":

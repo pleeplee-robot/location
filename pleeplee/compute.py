@@ -70,10 +70,12 @@ The direction D is the direction of the robot at initialisation.
 
 """
 import math
-from utils import Color
-from geometry import (Point, Triangle, rotateAngle, rotateVector,
+import shapely.geometry
+from .utils import Color
+from .geometry import (Point, Triangle, rotateAngle, rotateVector,
         angleBetween2Vects)
 from itertools import count
+
 
 # Globals Datas: (For the moment most of them are dummies)
 # position is in meter
@@ -205,23 +207,26 @@ def getPos2Dist(data1, data2):
 # remove solutions if they are not whithin the perimeter
 def filterPoints(solutions, corners):
 
-    Xmin = corners[0].point.X
-    Xmax = corners[0].point.X
-    Ymin = corners[0].point.Y
-    Ymax = corners[0].point.Y
-
+    coords = []
     for i in corners:
-        if i.point.X < Xmin:
-            Xmin = i.point.X
-        if i.point.X > Xmax:
-            Xmax = i.point.X
-        if i.point.Y < Ymin:
-            Ymin = i.point.Y
-        if i.point.Y > Ymax:
-            Ymax = i.point.Y
+        coords.append((i.point.X, i.point.Y))
 
-    return [value for value in solutions if value.X < Xmax and value.X > Xmin
-            and value.Y < Ymax and value.Y > Ymin]
+    polygon = shapely.geometry.polygon.Polygon(coords)
+
+    # This is ugly and needs to be cleaned:
+    # (conversion between point and shapely point)
+    solutions_2 = []
+    for i in solutions:
+        solutions_2.append(shapely.geometry.point.Point(i.X, i.Y))
+
+    solutions_2 = [value for value in solutions_2 if polygon.contains(value)]
+
+    # same this is ugly
+    solutions = []
+    for i in solutions_2:
+        solutions.append(Point(i.x, i.y))
+
+    return solutions
 
 
 def isAdjacent(color1, color2):
@@ -272,7 +277,7 @@ def vectorFromColors(led1, led2):
 # from left to right. This ensure that the robot will always be on the
 # adequate side of the area and the vectPerpendicular calculus will
 # be correct.
-def distFromAnglesNoRectangle(data1, data2):
+def distanceFromAngles(data1, data2):
 
     vectNorth = rotateVector(dirInit, angleNorth)
     actualVector = rotateVector(vectNorth, angleToDirection)
@@ -311,7 +316,7 @@ def distFromAnglesNoRectangle(data1, data2):
 
 # Final synthetizing of all the datas related to 2 points and computing
 def compute2Data(data1, data2):
-    (dist1, dist2) = distFromAnglesNoRectangle(data1, data2)
+    (dist1, dist2) = distanceFromAngles(data1, data2)
     data1.adjustDistance(dist1)
     data2.adjustDistance(dist2)
     res = getPos2Dist(data1, data2)
