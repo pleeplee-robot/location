@@ -42,14 +42,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        'Topic :: Internet',
-        'Topic :: Internet :: WWW/HTTP',
-        'Topic :: Internet :: WWW/HTTP :: Indexing/Search',
-        'Development Status :: 5 - Production/Stable',
+        'Framework :: Robot Framework',
+        'Framework :: Robot Framework :: Tool',
+        'Development Status :: 1 - Planning'
     ]
 )

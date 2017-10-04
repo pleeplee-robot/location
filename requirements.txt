@@ -2,7 +2,6 @@
 ####### requirements.txt #######
 #
 ###### Requirements for the location of the PleePlee-robot project ######
-tox
 pypandoc
 pytest
 pytest-mock
