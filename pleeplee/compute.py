@@ -77,28 +77,9 @@ from .geometry import (Point, Triangle, rotateAngle, rotateVector,
 from itertools import count
 
 
-# Globals Datas: (For the moment most of them are dummies)
-# position is in meter
-# angles are from -180 to 180 degree
-
 # The mathematical precision for round operations
 PRECISION = 4
 
-# Angle between the north and the axis of the robot at Initialisation
-# (same axis as an edge of the perimeter)
-# This angle is a fixed data measured at the initialization of the robot.
-# The angle is between 180 and -180 degree
-angleNorth = 20.0
-
-# This variable represent the direction of initialisation
-# Vector perpendicular to the side it face when initialised
-# This data is inputted by the user.
-dirInit = (0, 10)
-
-# Angle between actual direction and North
-# This data can be harvested in real time with a magnetic captor
-# for now we will keep this fake value
-angleToDirection = 35.0
 
 class LED:
 
@@ -111,17 +92,7 @@ class LED:
         return "LED(Position: %s ;Color : %s )"%(self.point, self.color)
 
 
-# the map is represented by 4 leds positionned at each corner of the area
-# available to the robot the corners must be inserted in a clockwise way
-
-corner1 = LED(Color.RED, Point(0.0, 0.0))
-corner2 = LED(Color.YELLOW, Point(0.0, 10.0))
-corner3 = LED(Color.BLUE, Point(10.0, 10.0))
-corner4 = LED(Color.GREEN, Point(10.0, 0.0))
-
-perimeter = [corner1, corner2, corner3, corner4]
-
-def _getLED(color):
+def _getLED(color, perimeter):
     for i in perimeter:
         if i.color == color:
             return i
@@ -132,7 +103,8 @@ def _getLED(color):
 class Data:
     _ids = count(0)
 
-    def __init__(self, color, angle, distance=None):
+    def __init__(self, color, angle, angleNorth, angleToDirection,
+                 perimeter, distance=None):
         # Intances counter: This variable enable us to track the order
         # of initialisation of the datas.
         self.id = next(self._ids)
@@ -141,7 +113,7 @@ class Data:
         self.angle = angle + angleToDirection + angleNorth
         self.distance = distance
         try:
-            self.led = _getLED(color)
+            self.led = _getLED(color, perimeter)
         except ValueError as error:
             print('The color does not correspond to an existing LED')
 
@@ -229,7 +201,7 @@ def filterPoints(solutions, corners):
     return solutions
 
 
-def isAdjacent(color1, color2):
+def isAdjacent(color1, color2, perimeter):
     if color1 == color2:
         print("merde")
         return False;
@@ -248,8 +220,8 @@ def isAdjacent(color1, color2):
 
 # Get the clockwise vector from two LEDs color in the perimeter
 # the arguments should be given from left to right in the scope of the camera.
-def vectorFromColors(led1, led2):
-    if not isAdjacent(led1.color, led2.color):
+def vectorFromColors(led1, led2, perimeter):
+    if not isAdjacent(led1.color, led2.color, perimeter):
         return led2.point.minus(led1.point)
     count = 0
     start = False
@@ -277,7 +249,8 @@ def vectorFromColors(led1, led2):
 # from left to right. This ensure that the robot will always be on the
 # adequate side of the area and the vectPerpendicular calculus will
 # be correct.
-def distanceFromAngles(data1, data2):
+def distanceFromAngles(data1, data2, dirInit, angleNorth, angleToDirection,
+        perimeter):
 
     vectNorth = rotateVector(dirInit, angleNorth)
     actualVector = rotateVector(vectNorth, angleToDirection)
@@ -286,7 +259,8 @@ def distanceFromAngles(data1, data2):
     # By convention we choose the vectors of the sides in a clockwise
     # way if they are adjacent. We will then only need a rotation in a counter
     # clockwise way to always have a vector facing the outside of the perimeter
-    vectPerpendicular = rotateVector(vectorFromColors(data1.led, data2.led), 90)
+    vectIni = vectorFromColors(data1.led, data2.led, perimeter)
+    vectPerpendicular = rotateVector(vectIni, 90)
     angle1 = angleBetween2Vects(vect1, vectPerpendicular)
     angle2 = angleBetween2Vects(vect2, vectPerpendicular)
     triangle1 = Triangle(angle1, data1.led.point, data1.led.color)
@@ -315,18 +289,19 @@ def distanceFromAngles(data1, data2):
 
 
 # Final synthetizing of all the datas related to 2 points and computing
-def compute2Data(data1, data2):
-    (dist1, dist2) = distanceFromAngles(data1, data2)
+def compute2Data(data1, data2, *args):
+    perimeter = args[-1]
+    (dist1, dist2) = distanceFromAngles(data1, data2, *args)
     data1.adjustDistance(dist1)
     data2.adjustDistance(dist2)
     res = getPos2Dist(data1, data2)
     return filterPoints(res, perimeter)
 
 
-def compute3Data(data1, data2, data3):
-    res1 = compute2Data(data1, data2)
-    res2 = compute2Data(data2, data3)
-    res3 = compute2Data(data1, data3)
+def compute3Data(data1, data2, data3, *args):
+    res1 = compute2Data(data1, data2, *args)
+    res2 = compute2Data(data2, data3, *args)
+    res3 = compute2Data(data1, data3, *args)
     res = res1 + res2 + res3
     return res
 
