@@ -22,5 +22,9 @@ The location is estimated with multiple datas:
   * [X] Complete the algorithm for non adjacent points
   * [X] Calculation of the angles with the vectors
   * [X] Synthetize the computations for 3 and 4 points
-  * [ ] Odometry
+  * [X] Odometry
   * [ ] Height parameter for the LEDs
+  * [ ] Clean code : replace geometry by shapely
+  * [ ] Clean code : make if PEP8 compliant (yapf, flake8, isort)
+  * [ ] Clean code : refactor utils
+  * [ ] Add Documentation
