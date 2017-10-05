@@ -1,5 +1,5 @@
 REQUIREMENTS=requirements.txt
-TRASH=**/*.pyc tests/__pycache__ failures
+TRASH=**/*.pyc **/__pycache__ failures
 
 check:
 	pytest

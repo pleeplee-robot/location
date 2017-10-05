@@ -24,14 +24,16 @@ The datas needed as parameters are:
 class Odometry:
 
     # For now the range of acceptable distance with odometry is 30cm
+    # We need to test the fiability of the measured values to
+    # decrease this value.
     _range = 0.3
 
-    def __init__(lastPos, dist):
+    def __init__(self, lastPos, dist):
         self.lastPos = lastPos
         self.dist = dist
 
-    def whithinRange(point):
-        return lastPost.distance(point) - dist < _range
+    def withinRange(self, point):
+        return self.lastPos.distance(point) - self.dist < self._range
 
 
 def filterOdometry(solutions, odometry):
@@ -79,7 +81,7 @@ class Location:
 
     """
 
-    def __init__(angleNorth, dirInit, height, *args):
+    def __init__(self, angleNorth, dirInit, height, *args):
         self.angleNorth = angleNorth
         self.dirInit = dirInit
         self.heightLEDs = height
@@ -89,24 +91,25 @@ class Location:
         self.odometry = None
         self.datas = None
 
-    def refreshData(angleToDirection, odometry, *args):
+    def refreshData(self, angleToDirection, odometry, *args):
         self.angleToDirection = angleToDirection
         self.odometry = odometry
         self.datas = args
 
-    def computePos(*args):
+    def computePos(self, *args):
         self.refreshData(*args)
-        args = [self.dirInit, self.angleNorth, self.angleToDirection, perimeter]
+        my_args = [self.dirInit, self.angleNorth, self.angleToDirection,
+                self.perimeter]
         points = []
 
         if len(self.datas) < 2:
             print("Not enough data")
             return None
         elif len(self.datas) == 2:
-            points = compute2Data(*self.datas, *args)
+            points = compute2Data(*self.datas, *my_args)
         else:
             points = compute3Data(self.datas[0], self.datas[1],
-                    self.datas[2], *args)
+                    self.datas[2], *my_args)
 
         points = filterOdometry(points, self.odometry)
         if len(points) == 0:
