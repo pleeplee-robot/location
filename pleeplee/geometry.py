@@ -37,32 +37,6 @@ class Point:
         return (self.X - other.X, self.Y - other.Y)
 
 
-# Rectangle triangle
-class Triangle:
-    def __init__(self, angle, point, color):
-        # angle from the point we try to find the location
-        self.angleP = angle
-        # corner of the perimeter
-        self.point = point
-        self.color = color
-        # offset to the standard direction
-        self.offset = 0
-
-    # angle from the led at a corner of the perimeter
-    def cornerAngle(self):
-        return 90.0 - self.angleP
-
-    def __str__(self):
-        return "TRIANGLE(%s ;%s)" % (self.angleP, self.cornerAngle())
-
-
-# Rotate the angle in a counter-clockwise way in degree for angles between
-# -180 and 180 degree.
-def rotateAngle(alpha):
-    if alpha + 45 > 180:
-        alpha -= 360
-    return alpha + 45
-
 
 # Rotate a vector in a plane by an angle alpha in degree.
 # The rotation is clockwise.

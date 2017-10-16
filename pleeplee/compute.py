@@ -11,7 +11,7 @@ import math
 
 import shapely.geometry
 
-from .geometry import Point, Triangle, angleBetween2Vects, rotateVector
+from .geometry import Point, angleBetween2Vects, rotateVector
 
 """
 This file contains the computation of all datas recieved by the robot to
@@ -215,30 +215,26 @@ def distanceFromAngles(data1, data2, dirInit, angleNorth, angleToDirection,
     vectPerpendicular = rotateVector(vectIni, 90)
     angle1 = angleBetween2Vects(vect1, vectPerpendicular)
     angle2 = angleBetween2Vects(vect2, vectPerpendicular)
-    triangle1 = Triangle(angle1, data1.led.point, data1.led.color)
-    triangle2 = Triangle(angle2, data2.led.point, data2.led.color)
 
-    if triangle1.angleP < triangle2.angleP:
-        triangle1, triangle2 = triangle2, triangle1
-    distance = abs(triangle1.point.distance(triangle2.point))
+    if angle1 < angle2:
+        angle1, angle2 = angle2, angle1
+    distance = abs(data1.led.point.distance(data2.led.point))
     # if the two angles have different signs their product will de negative
-    if triangle1.angleP * triangle2.angleP < 0:
-        x = distance / (1 + math.tan(math.radians(abs(triangle2.angleP))) /
-                        math.tan(math.radians(abs(triangle1.angleP))))
+    if angle1 * angle2 < 0:
+        x = distance / (1 + math.tan(math.radians(abs(angle2))) /
+                        math.tan(math.radians(abs(angle1))))
         y = distance - x
-        d1 = x / math.sin(math.radians(abs(triangle1.angleP)))
-        d2 = y / math.sin(math.radians(abs(triangle2.angleP)))
+        d1 = x / math.sin(math.radians(abs(angle1)))
+        d2 = y / math.sin(math.radians(abs(angle2)))
         return (d1, d2)
     else:
-        diff = math.radians(abs(triangle1.angleP) - abs(triangle2.angleP))
+        diff = math.radians(abs(angle1) - abs(angle2))
         ret = math.sin(diff)
         if ret == 0.0:
             print("oooops")
             return (0, 0)
-        x = distance * math.cos(math.radians(
-            triangle2.angleP)) / math.sin(diff)
-        y = distance * math.cos(math.radians(
-            triangle1.angleP)) / math.sin(diff)
+        x = distance * math.cos(math.radians(angle2)) / math.sin(diff)
+        y = distance * math.cos(math.radians(angle1)) / math.sin(diff)
         return (x, y)
 
 

@@ -2,8 +2,8 @@
 
 from math import sqrt
 
-from pleeplee.geometry import (PRECISION, Point, Triangle, angleBetween2Vects,
-                               rotateAngle, rotateVector)
+from pleeplee.geometry import (PRECISION, Point, angleBetween2Vects,
+                               rotateVector)
 from pleeplee.utils import Color
 
 
@@ -33,22 +33,6 @@ def test_point_minus():
     point1 = Point(2.0, 4.5)
     point2 = Point(3.4, 6.7)
     assert point1.minus(point2) == (-1.4, -2.2)
-
-
-# Test the Triangle class
-def test_triangle_corner():
-    point = Point(2.0, 4.5)
-    angle = 24.56
-    triangle = Triangle(angle, point, Color.RED)
-    # The triangle must be rectangle.
-    # Sum of the angles of triangle = 180 degree
-    assert triangle.angleP + triangle.cornerAngle() + 90 == 180
-
-
-def test_rotate_angle():
-    assert rotateAngle(34.89) == 34.89 + 45
-    assert rotateAngle(-179.34) == -179.34 + 45
-    assert rotateAngle(169.28) == 169.28 - 360 + 45
 
 
 def test_rotate_vector_simple():
