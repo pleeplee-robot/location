@@ -1,5 +1,7 @@
-import pytest
 import os.path
+
+import pytest
+
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):

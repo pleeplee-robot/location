@@ -7,7 +7,7 @@
 #           computations                                 #
 ##########################################################
 
-from math import sqrt, radians, cos, sin, degrees, atan2
+from math import atan2, cos, degrees, radians, sin, sqrt
 
 PRECISION = 3
 

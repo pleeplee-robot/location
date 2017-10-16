@@ -3,6 +3,7 @@
 
 from .compute import compute2Data, compute3Data, sortData
 
+
 """
 This file contains a class emcompassing all the data transmitted by the robot
 An instance of this class represents all the data we have access to compute

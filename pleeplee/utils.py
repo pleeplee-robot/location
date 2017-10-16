@@ -9,6 +9,8 @@
 import math
 from enum import Enum
 from itertools import count
+
+
 """
 There are only 7 colors available to simplify the image processing at
 the camera level. The maximum number of LEDs available for a garden

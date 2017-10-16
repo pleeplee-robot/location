@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-from pleeplee.geometry import (Point, Triangle, rotateAngle, rotateVector,
-                               angleBetween2Vects, PRECISION)
-from pleeplee.utils import Color
 from math import sqrt
+
+from pleeplee.geometry import (PRECISION, Point, Triangle, angleBetween2Vects,
+                               rotateAngle, rotateVector)
+from pleeplee.utils import Color
 
 
 # Test the Point class

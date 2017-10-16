@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import pytest
+
 from pleeplee.geometry import Point
-from pleeplee.utils import Color, Data, LED
+from pleeplee.utils import LED, Color, Data
 
 # Data:
 

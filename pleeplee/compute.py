@@ -8,9 +8,10 @@
 #########################################################
 
 import math
-import shapely.geometry
-from .geometry import (Point, Triangle, rotateVector, angleBetween2Vects)
 
+import shapely.geometry
+
+from .geometry import Point, Triangle, angleBetween2Vects, rotateVector
 
 """
 This file contains the computation of all datas recieved by the robot to
