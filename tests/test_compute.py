@@ -5,7 +5,7 @@ import math
 from pytest_mock import mocker
 from pleeplee.compute import *
 from pleeplee.geometry import (Point, Triangle)
-from pleeplee.utils import Color
+from pleeplee.utils import Color, Data, LED
 
 
 # Data needed for Mocks:
@@ -27,18 +27,6 @@ testPerimeter2 = [corner1_t2, corner2_t2, corner3_t2, corner4_t2]
 
 
 # Test functions:
-
-def test_data_adjust_distance():
-    perimeter = testPerimeter1
-    angleNorth = 20.0
-    angleToDirection = 35.0
-    args = [angleNorth, angleToDirection, perimeter]
-
-    data1 = Data(Color.RED, 38.45, *args, 12.4)
-    data2 = Data(Color.RED, 38.45, *args)
-    assert data1.adjustDistance(6.8) == 9.6
-    assert data2.adjustDistance(6.8) == 6.8
-
 
 def test_pos_2_dist_none():
     perimeter = testPerimeter1

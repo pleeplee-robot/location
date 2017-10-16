@@ -26,5 +26,5 @@ The location is estimated with multiple datas:
   * [X] Height parameter for the LEDs
   * [ ] Clean code : replace geometry by shapely
   * [ ] Clean code : make if PEP8 compliant (yapf, flake8, isort)
-  * [ ] Clean code : refactor utils
+  * [X] Clean code : refactor utils
   * [ ] Add Documentation
