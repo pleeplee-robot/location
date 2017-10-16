@@ -80,13 +80,23 @@ from itertools import count
 # The mathematical precision for round operations
 PRECISION = 4
 
-
+"""
+The LED class represents a colored landmark to be put in the garden.
+These landmarks are mandatory for the robot to locate itself.
+The parameters of the class are the following:
+    - color : The color of the LED, it must be unique
+    - point : The position of the LED in the plan
+    - perimeter : True if the LED is on the perimeter.
+                False otherwise. By default this value is true.
+                If the LED is on the perimeter an additionnal filter
+                of the possible location's solution is applied
+"""
 class LED:
 
-    def __init__(self, color, point):
+    def __init__(self, color, point, inPerimeter = True):
         self.color = color
         self.point = point
-        self.angle = 0
+        self.inPerimeter = inPerimeter
 
     def __str__(self):
         return "LED(Position: %s ;Color : %s )"%(self.point, self.color)
@@ -181,7 +191,8 @@ def filterPoints(solutions, corners):
 
     coords = []
     for i in corners:
-        coords.append((i.point.X, i.point.Y))
+        if i.inPerimeter:
+            coords.append((i.point.X, i.point.Y))
 
     polygon = shapely.geometry.polygon.Polygon(coords)
 
