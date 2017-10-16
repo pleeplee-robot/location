@@ -7,6 +7,8 @@
 #           computations                                 #
 ##########################################################
 
+import shapely.geometry
+
 from math import atan2, cos, degrees, radians, sin, sqrt
 
 PRECISION = 3
@@ -36,6 +38,8 @@ class Point:
     def minus(self, other):
         return (self.X - other.X, self.Y - other.Y)
 
+    def toShapely(self):
+        return shapely.geometry.point.Point(self.X, self.Y)
 
 
 # Rotate a vector in a plane by an angle alpha in degree.

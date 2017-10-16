@@ -139,20 +139,10 @@ def filterPoints(solutions, corners):
 
     polygon = shapely.geometry.polygon.Polygon(coords)
 
-    # This is ugly and needs to be cleaned:
-    # (conversion between point and shapely point)
-    solutions_2 = []
-    for i in solutions:
-        solutions_2.append(shapely.geometry.point.Point(i.X, i.Y))
+    solutions_2 = [value.toShapely() for value in solutions
+                   if polygon.contains(value.toShapely())]
 
-    solutions_2 = [value for value in solutions_2 if polygon.contains(value)]
-
-    # same this is ugly
-    solutions = []
-    for i in solutions_2:
-        solutions.append(Point(i.x, i.y))
-
-    return solutions
+    return [Point(v.x, v.y) for v in solutions_2]
 
 
 def isAdjacent(color1, color2, perimeter):
