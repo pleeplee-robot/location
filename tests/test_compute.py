@@ -4,9 +4,8 @@ import pytest
 import math
 from pytest_mock import mocker
 from pleeplee.compute import *
-from pleeplee.geometry import (Point, Triangle)
+from pleeplee.geometry import Point
 from pleeplee.utils import Color, Data, LED
-
 
 # Data needed for Mocks:
 # Test data set 1
@@ -25,8 +24,8 @@ corner4_t2 = LED(Color.GREEN, Point(1.0, 10.0))
 
 testPerimeter2 = [corner1_t2, corner2_t2, corner3_t2, corner4_t2]
 
-
 # Test functions:
+
 
 def test_pos_2_dist_none():
     perimeter = testPerimeter1
@@ -89,9 +88,11 @@ def test_is_adjacent():
 
 def test_vector_from_colors():
     perimeter = testPerimeter1
-    assert (vectorFromColors(perimeter[0], perimeter[1], perimeter) ==
-            vectorFromColors(perimeter[1], perimeter[0], perimeter))
-    assert vectorFromColors(perimeter[2], perimeter[3], perimeter) == (0.0, -10.0)
+    assert (vectorFromColors(perimeter[0], perimeter[1],
+                             perimeter) == vectorFromColors(
+                                 perimeter[1], perimeter[0], perimeter))
+    assert vectorFromColors(perimeter[2], perimeter[3], perimeter) == (0.0,
+                                                                       -10.0)
 
 
 def test_dist_from_angles_no_rectangle():
@@ -104,8 +105,8 @@ def test_dist_from_angles_no_rectangle():
     data2 = Data(Color.GREEN, -35.0, *args)
 
     (x, y) = distanceFromAngles(data1, data2, dirInit, angleNorth,
-            angleToDirection, perimeter)
-    errorMargin = 0.3 # 30cm
+                                angleToDirection, perimeter)
+    errorMargin = 0.3  # 30cm
 
     assert abs(x - 3.7) < errorMargin
     assert abs(y - 9.2) < errorMargin
@@ -121,8 +122,8 @@ def test_dist_from_angles_no_rectangle_2():
     data2_t2 = Data(Color.BLUE, -25.0, *args)
 
     (x, y) = distanceFromAngles(data1_t2, data2_t2, dirInit, angleNorth,
-            angleToDirection, perimeter)
-    errorMargin = 0.04 # 4cm
+                                angleToDirection, perimeter)
+    errorMargin = 0.04  # 4cm
 
     assert abs(x - 6.4) < errorMargin
     assert abs(y - 4.5) < errorMargin
@@ -138,10 +139,10 @@ def test_compute_2_data_1():
     data2_t2 = Data(Color.BLUE, -25.0, *args)
 
     res = compute2Data(data1_t2, data2_t2, dirInit, angleNorth,
-            angleToDirection, perimeter)
+                       angleToDirection, perimeter)
 
     assert len(res) == 1
-    errorMargin = 0.1 # 10cm
+    errorMargin = 0.1  # 10cm
     assert abs(res[0].X - 7.0) < errorMargin
     assert abs(res[0].Y - 7.0) < errorMargin
 
@@ -158,20 +159,20 @@ def test_compute_3_data():
     data2_t2 = Data(Color.BLUE, -25.0, *args)
 
     res = compute3Data(data0_t2, data1_t2, data2_t2, dirInit, angleNorth,
-            angleToDirection, perimeter)
+                       angleToDirection, perimeter)
 
-    errorMargin = 0.1 # 10cm
+    errorMargin = 0.1  # 10cm
     assert abs(res[0].X - 7.0) < errorMargin
     assert abs(res[0].Y - 7.0) < errorMargin
 
 
 def test_has_many_occurencies():
-    my_list = [ Point(6.92, 5.78), Point(6.99, 5.81), Point(6.96, 5.80) ]
+    my_list = [Point(6.92, 5.78), Point(6.99, 5.81), Point(6.96, 5.80)]
     ref = Point(7.0, 5.8)
     assert hasManyOccurencies(ref, my_list)
 
 
 def test_sort_data():
-    my_list = [ Point(6.92, 5.78), Point(6.99, 5.81), Point(6.96, 5.80) ]
+    my_list = [Point(6.92, 5.78), Point(6.99, 5.81), Point(6.96, 5.80)]
     ref = Point(7.0, 5.8)
     assert sortData(my_list) == ref

@@ -21,6 +21,7 @@ The datas needed as parameters are:
     - TBD : height of LEDs (only at init)
 """
 
+
 class Odometry:
 
     # For now the range of acceptable distance with odometry is 30cm
@@ -86,7 +87,7 @@ class Location:
         self.dirInit = dirInit
         self.heightLEDs = height
         self.perimeter = args
-        ## at each iteration
+        # at each iteration
         self.angleToDirection = None
         self.odometry = None
         self.datas = None
@@ -99,7 +100,7 @@ class Location:
     def computePos(self, *args):
         self.refreshData(*args)
         my_args = [self.dirInit, self.angleNorth, self.angleToDirection,
-                self.perimeter]
+                   self.perimeter]
         points = []
 
         if len(self.datas) < 2:
@@ -109,7 +110,7 @@ class Location:
             points = compute2Data(*self.datas, *my_args)
         else:
             points = compute3Data(self.datas[0], self.datas[1],
-                    self.datas[2], *my_args)
+                                  self.datas[2], *my_args)
 
         points = filterOdometry(points, self.odometry)
         if len(points) == 0:

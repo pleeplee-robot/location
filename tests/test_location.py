@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 import pytest
-import math
 from pytest_mock import mocker
 from pleeplee.geometry import Point
-from pleeplee.compute import LED, Data
+from pleeplee.utils import LED, Data
 from pleeplee.utils import Color
 from pleeplee.location import Odometry, filterOdometry, Location
+
 
 def test_odometry():
     lastPos = Odometry(Point(2.0, 4.0), 1.2)
@@ -46,4 +46,5 @@ def test_location_compute_pos(mocker):
 
     # Init & use of location
     loc = Location(angleNorth, dirInit, height, *perimeter)
-    assert loc.computePos(angleToDirection, odometry, *datas) == Point(7.0, 7.0)
+    assert loc.computePos(angleToDirection, odometry, *datas) == Point(
+        7.0, 7.0)

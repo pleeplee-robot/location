@@ -7,6 +7,11 @@
 #           related to the robot location               #
 #########################################################
 
+import math
+import shapely.geometry
+from .geometry import (Point, Triangle, rotateVector, angleBetween2Vects)
+
+
 """
 This file contains the computation of all datas recieved by the robot to
 find the robot position in the given perimeter.
@@ -25,8 +30,8 @@ The input datas are:
     (previous position, estimated position, error margin)
 """
 """ Initialisation procedure
-During the initialisation phase the user has to put the LEDs landmark on the map
-and input their coodinates and color into the API.
+During the initialisation phase the user has to put the LEDs landmark
+on the map and input their coodinates and color into the API.
 Before turning on the robot for initialisation phase it has to face a side
 of the perimeter delimited by LEDs. The minimum number of LEDs landmark is 4.
 The LEDs have to be of different colors for the location to work properly.
@@ -69,12 +74,6 @@ With 0 <= Theta <= 180.
 The direction D is the direction of the robot at initialisation.
 
 """
-import math
-import shapely.geometry
-from .utils import Color, LED, Data
-from .geometry import (Point, Triangle, rotateAngle, rotateVector,
-        angleBetween2Vects)
-
 
 # The mathematical precision for round operations
 PRECISION = 4
@@ -82,7 +81,7 @@ PRECISION = 4
 
 def getPos2Dist(data1, data2):
 
-    if data1.distance == None or data2.distance == None:
+    if data1.distance is None or data2.distance is None:
         raise ValueError('Incomplete datas')
 
     P1 = data1.led.point
@@ -109,15 +108,17 @@ def getPos2Dist(data1, data2):
     chordmidpointx = P1.X + (chorddistance * dx) / D
     chordmidpointy = P1.Y + (chorddistance * dy) / D
 
-    I1 = Point(round(chordmidpointx + (halfchordlength * dy) / D, PRECISION),
-            round(chordmidpointy - (halfchordlength * dx) / D, PRECISION))
-    theta1 = round(math.degrees(math.atan2(I1.Y - P1.Y, I1.X - P1.X)),
-            PRECISION)
+    I1 = Point(
+        round(chordmidpointx + (halfchordlength * dy) / D, PRECISION),
+        round(chordmidpointy - (halfchordlength * dx) / D, PRECISION))
+    theta1 = round(
+        math.degrees(math.atan2(I1.Y - P1.Y, I1.X - P1.X)), PRECISION)
 
-    I2 = Point(round(chordmidpointx - (halfchordlength * dy) / D, PRECISION),
-            round(chordmidpointy + (halfchordlength * dx) / D, PRECISION))
-    theta2 = round(math.degrees(math.atan2(I2.Y - P1.Y, I2.X - P1.X)),
-            PRECISION)
+    I2 = Point(
+        round(chordmidpointx - (halfchordlength * dy) / D, PRECISION),
+        round(chordmidpointy + (halfchordlength * dx) / D, PRECISION))
+    theta2 = round(
+        math.degrees(math.atan2(I2.Y - P1.Y, I2.X - P1.X)), PRECISION)
 
     if D == R1 + R2 or D == R1 - R2:
         return [I1]
@@ -156,7 +157,7 @@ def filterPoints(solutions, corners):
 def isAdjacent(color1, color2, perimeter):
     if color1 == color2:
         print("merde")
-        return False;
+        return False
     count = 0
     start = False
     for i in perimeter:
@@ -188,9 +189,9 @@ def vectorFromColors(led1, led2, perimeter):
         if start:
             count += 1
     if count == len(perimeter):
-        firstColInFirst = not firstColorInFirst
-    return (led2.point.minus(led1.point) if firstColorInFirst
-                    else led1.point.minus(led2.point))
+        firstColorInFirst = not firstColorInFirst
+    return (led2.point.minus(led1.point)
+            if firstColorInFirst else led1.point.minus(led2.point))
 
 
 # The computation is done with vectors
@@ -202,10 +203,8 @@ def vectorFromColors(led1, led2, perimeter):
 # adequate side of the area and the vectPerpendicular calculus will
 # be correct.
 def distanceFromAngles(data1, data2, dirInit, angleNorth, angleToDirection,
-        perimeter):
+                       perimeter):
 
-    vectNorth = rotateVector(dirInit, angleNorth)
-    actualVector = rotateVector(vectNorth, angleToDirection)
     vect1 = rotateVector(dirInit, data1.angle)
     vect2 = rotateVector(dirInit, data2.angle)
     # By convention we choose the vectors of the sides in a clockwise
@@ -224,7 +223,7 @@ def distanceFromAngles(data1, data2, dirInit, angleNorth, angleToDirection,
     # if the two angles have different signs their product will de negative
     if triangle1.angleP * triangle2.angleP < 0:
         x = distance / (1 + math.tan(math.radians(abs(triangle2.angleP))) /
-                math.tan(math.radians(abs(triangle1.angleP))))
+                        math.tan(math.radians(abs(triangle1.angleP))))
         y = distance - x
         d1 = x / math.sin(math.radians(abs(triangle1.angleP)))
         d2 = y / math.sin(math.radians(abs(triangle2.angleP)))
@@ -235,8 +234,10 @@ def distanceFromAngles(data1, data2, dirInit, angleNorth, angleToDirection,
         if ret == 0.0:
             print("oooops")
             return (0, 0)
-        x = distance * math.cos(math.radians(triangle2.angleP)) / math.sin(diff)
-        y = distance * math.cos(math.radians(triangle1.angleP)) / math.sin(diff)
+        x = distance * math.cos(math.radians(
+            triangle2.angleP)) / math.sin(diff)
+        y = distance * math.cos(math.radians(
+            triangle1.angleP)) / math.sin(diff)
         return (x, y)
 
 

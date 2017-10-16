@@ -9,13 +9,13 @@
 import math
 from enum import Enum
 from itertools import count
-
-
 """
 There are only 7 colors available to simplify the image processing at
 the camera level. The maximum number of LEDs available for a garden
 is 7.
 """
+
+
 class Color(Enum):
     NONE = 0
     RED = 1
@@ -40,17 +40,16 @@ The parameters of the class are the following:
     - height : the difference of height between the robot's camera and the LED
 """
 
-class LED:
 
-    def __init__(self, color, point, inPerimeter = True, height = 0.0):
+class LED:
+    def __init__(self, color, point, inPerimeter=True, height=0.0):
         self.color = color
         self.point = point
         self.inPerimeter = inPerimeter
         self.height = height
 
-
     def __str__(self):
-        return "LED(Position: %s ;Color : %s )"%(self.point, self.color)
+        return "LED(Position: %s ;Color : %s )" % (self.point, self.color)
 
 
 def _getLED(color, perimeter):
@@ -64,8 +63,13 @@ def _getLED(color, perimeter):
 class Data:
     _ids = count(0)
 
-    def __init__(self, color, angle, angleNorth, angleToDirection,
-                 perimeter, distance=None):
+    def __init__(self,
+                 color,
+                 angle,
+                 angleNorth,
+                 angleToDirection,
+                 perimeter,
+                 distance=None):
         # Intances counter: This variable enable us to track the order
         # of initialisation of the datas.
         self.id = next(self._ids)
@@ -83,12 +87,10 @@ class Data:
     # This function is to be adjusted with real data in order to reduce
     # the error due to each method
     def adjustDistance(self, dist):
-        if self.distance == None:
+        if self.distance is None:
             self.distance = dist
         else:
             theta = math.asin(self.led.height / self.distance)
             adjustedDist = math.cos(theta) * self.distance
             self.distance = (adjustedDist + dist) / 2
         return self.distance
-
-

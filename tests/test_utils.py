@@ -4,7 +4,6 @@ import pytest
 from pleeplee.geometry import Point
 from pleeplee.utils import Color, Data, LED
 
-
 # Data:
 
 corner1 = LED(Color.RED, Point(0.0, 0.0))
@@ -15,6 +14,7 @@ corner4 = LED(Color.GREEN, Point(10.0, 0.0))
 testPerimeter1 = [corner1, corner2, corner3, corner4]
 
 # Test function:
+
 
 def test_data_adjust_distance():
     perimeter = testPerimeter1

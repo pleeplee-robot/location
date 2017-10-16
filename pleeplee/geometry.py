@@ -10,6 +10,8 @@
 from math import sqrt, radians, cos, sin, degrees, atan2
 
 PRECISION = 3
+
+
 class Point:
 
     # Thresold to determine that two points are similar (distance < 15cm)
@@ -20,7 +22,7 @@ class Point:
         self.Y = y
 
     def __str__(self):
-        return "Point(%s,%s)"%(self.X, self.Y)
+        return "Point(%s,%s)" % (self.X, self.Y)
 
     def distance(self, other):
         dx = self.X - other.X
@@ -37,7 +39,6 @@ class Point:
 
 # Rectangle triangle
 class Triangle:
-
     def __init__(self, angle, point, color):
         # angle from the point we try to find the location
         self.angleP = angle
@@ -52,7 +53,8 @@ class Triangle:
         return 90.0 - self.angleP
 
     def __str__(self):
-        return "TRIANGLE(%s ;%s)"%(self.angleP, self.cornerAngle())
+        return "TRIANGLE(%s ;%s)" % (self.angleP, self.cornerAngle())
+
 
 # Rotate the angle in a counter-clockwise way in degree for angles between
 # -180 and 180 degree.
@@ -60,6 +62,7 @@ def rotateAngle(alpha):
     if alpha + 45 > 180:
         alpha -= 360
     return alpha + 45
+
 
 # Rotate a vector in a plane by an angle alpha in degree.
 # The rotation is clockwise.
@@ -70,6 +73,7 @@ def rotateVector(vect, alpha):
     u = round(x * cos(radians(alpha)) + y * sin(radians(alpha)), PRECISION)
     v = round(y * cos(radians(alpha)) - x * sin(radians(alpha)), PRECISION)
     return (u, v)
+
 
 # Function to get the angle beween two vectors.
 # The angle obtained respect the angle convention detailled in compute.py
