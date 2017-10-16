@@ -5,5 +5,4 @@
 pypandoc
 pytest
 pytest-mock
-opencv-python
 shapely
