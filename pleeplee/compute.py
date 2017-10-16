@@ -90,13 +90,16 @@ The parameters of the class are the following:
                 False otherwise. By default this value is true.
                 If the LED is on the perimeter an additionnal filter
                 of the possible location's solution is applied
+    - height : the difference of height between the robot's camera and the LED
 """
 class LED:
 
-    def __init__(self, color, point, inPerimeter = True):
+    def __init__(self, color, point, inPerimeter = True, height = 0.0):
         self.color = color
         self.point = point
         self.inPerimeter = inPerimeter
+        self.height = height
+
 
     def __str__(self):
         return "LED(Position: %s ;Color : %s )"%(self.point, self.color)
@@ -135,7 +138,9 @@ class Data:
         if self.distance == None:
             self.distance = dist
         else:
-            self.distance = (self.distance + dist) / 2
+            theta = math.asin(self.led.height / self.distance)
+            adjustedDist = math.cos(theta) * self.distance
+            self.distance = (adjustedDist + dist) / 2
         return self.distance
 
 
