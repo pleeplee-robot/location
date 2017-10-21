@@ -30,7 +30,12 @@ setup(
     packages=['pleeplee'],
     include_package_data=True,
     zip_safe=False,  # Because of the certificate
-    install_requires=['requests[security] >= 2.9.1'],
+    install_requires=[
+        'pypandoc',
+        'pytest',
+        'pytest-mock',
+        'shapely'
+        ],
     description='PleePlee robot API for location',
     long_description=README,
     author='Loic BANET',
