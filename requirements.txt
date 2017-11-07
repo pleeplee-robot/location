@@ -2,7 +2,14 @@
 ####### requirements.txt #######
 #
 ###### Requirements for the location of the PleePlee-robot project ######
-pypandoc
+
+# Maths
+shapely
+
+# Tests
 pytest
 pytest-mock
-shapely
+
+# Doc
+sphinx
+sphinxcontrib-napoleon

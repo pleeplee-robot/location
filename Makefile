@@ -7,7 +7,11 @@ check:
 init:
 	pip3 install -r $(REQUIREMENTS)
 
-clean:
-	rm -rf $(TRASH)
+doc:
+	$(MAKE) -C doc/ html
 
-.PHONY: init test
+clean:
+	$(RM) -r $(TRASH)
+	$(MAKE) -C dec/ clean
+
+.PHONY: init test doc
