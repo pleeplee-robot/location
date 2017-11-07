@@ -311,7 +311,7 @@ def compute2Data(data1, data2, *args):
         data2: second Data instance.
 
         *args: dirInit, angleNorth, angleToDirection, perimeter.
-        See distanceFromAngles.
+               See distanceFromAngles.
 
     Returns:
         A list of candidate positions for the actual location

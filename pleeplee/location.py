@@ -13,7 +13,7 @@ class Odometry:
         lastPos: Last position of the robot when the position was computed.
 
         dist: distance traveled since lastPos.
-        Recieved through odometry captors.
+              Recieved through odometry captors.
     """
 
     # For now the range of acceptable distance with odometry is 30cm
@@ -69,29 +69,30 @@ class Location:
 
     Attributes:
         angleNorth: Angle between the north and the axis of the robot at
-        Initialization. This angle is a fixed data measured only once
-        at the initialization of the robot.
+                    initialization. This angle is a fixed data measured only
+                    once at the initialization of the robot.
 
         dirInit: This variable represent the direction the robot is at
-        initialization. This data is to be inputted by the user once.
-        It is a vector.
+                 initialization. This data is to be inputted by the user once.
+                 It is a vector.
 
         heightLEDs: Difference of height between the robot camera and the
-        LEDs used as corners. Value is in meter.
+                    LEDs used as corners. Value is in meter.
 
         perimeter: List of LEDs. (LED class can be found in compute.py)
-        Each element of the lsit represents a corner of the area.
-        The corners MUST be sorted clockwise when inserted in the list.
+                   Each element of the lsit represents a corner of the area.
+                   The corners MUST be sorted clockwise when inserted in the list.
 
         angleToDirection: Angle between actual direction and North.
-        This data is to be harvested in real time with a magnetic captor.
-        Data is needed everytime the location is computed.
+                          This data is to be harvested in real time with a
+                          magnetic captor. Data is needed everytime the
+                          location is computed.
 
         odometry: Instance of class Odometry.
 
         datas: List of Data. (The Data class can be found in compute.py)
-        These values represents the data collected by the robot camera.
-        (LEDs percieved, angle, estimated distance)
+               These values represents the data collected by the robot camera.
+               (LEDs percieved, angle, estimated distance)
     """
 
     def __init__(self, angleNorth, dirInit, height, *args):
@@ -116,7 +117,7 @@ class Location:
 
         Args:
             angleToDirection: The angle between the direction of
-            the robot and the North.
+                              the robot and the North.
 
             odometry: An instance of Odometry class.
 

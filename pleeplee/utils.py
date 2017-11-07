@@ -40,9 +40,9 @@ class LED:
         point: The position of the LED in the plan. geometry.point instance.
 
         inPerimeter: True if the LED is on the perimeter. False otherwise.
-
-        By default this value is true. If the LED is on the perimeter an
-        additionnal filter of the possible location's solution is applied.
+                     By default this value is true. If the LED is on the
+                     perimeter an additionnal filter of the possible location's
+                     solution is applied.
 
         height: the difference of height between the robot's camera and the LED.
 """
@@ -73,13 +73,13 @@ class Data:
         id: A unique integer.
 
         angle: The angle calculated by the position of the blob in
-        the picture and the position of the camera relative to the
-        axis of the robot.
+               the picture and the position of the camera relative to the
+               axis of the robot.
 
         distance: The distance computed by the image treatment.
-        ideally this data is achievable however in our case because
-        of the varying size of the light blobs depending on the color
-        we cannot get this data.
+                  ideally this data is achievable however in our case because
+                  of the varying size of the light blobs depending on the color
+                  we cannot get this data.
 
         led: A LED class instance.
     """
@@ -118,7 +118,7 @@ class Data:
 
         Args:
             dist: The distance. This value is expected to have been
-            computed from the angle. (float)
+                  computed from the angle. (float)
         """
         if self.distance is None:
             self.distance = dist

@@ -10,8 +10,10 @@ Welcome to PleePlee Location's documentation!
     :maxdepth: 2
     :caption: Contents:
 
-    content
-
+    utils
+    geometry
+    compute
+    location
 
 
 Indices and tables
