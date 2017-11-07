@@ -25,4 +25,5 @@ The location is estimated with multiple datas:
   * [X] Odometry
   * [X] Height parameter for the LEDs
   * [X] Code is PEP8 compliant (yapf, flake8, isort)
-  * [ ] Add Documentation
+  * [X] Add Documentation
+  * [ ] Improve Documentation

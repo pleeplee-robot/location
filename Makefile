@@ -8,10 +8,10 @@ init:
 	pip3 install -r $(REQUIREMENTS)
 
 doc:
-	$(MAKE) -C doc/ html
+	$(MAKE) -C docs/ html
 
 clean:
 	$(RM) -r $(TRASH)
-	$(MAKE) -C doc/ clean
+	$(MAKE) -C docs/ clean
 
-.PHONY: init test doc
+.PHONY: init test doc check

@@ -31,7 +31,8 @@ setup(
     include_package_data=True,
     zip_safe=False,  # Because of the certificate
     install_requires=[
-        'pypandoc',
+        'sphinx',
+        'sphinxcontrib-napoleon',
         'pytest',
         'pytest-mock',
         'shapely'
