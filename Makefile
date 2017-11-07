@@ -12,6 +12,6 @@ doc:
 
 clean:
 	$(RM) -r $(TRASH)
-	$(MAKE) -C dec/ clean
+	$(MAKE) -C doc/ clean
 
 .PHONY: init test doc
