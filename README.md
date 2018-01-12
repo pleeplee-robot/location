@@ -3,7 +3,7 @@
 
 ## PleePlee Robot
 
-![logo](ressources/logo-pleeplee.png)
+![logo](resources/logo-pleeplee.png)
 
 PleePlee is a proof of concept of a mobile gardener robot.
 This repository is about the location of the robot.
@@ -40,7 +40,7 @@ For the PleePlee robot here is how we took the necessary measures:
 - The north with a magnetic captor
 - The angle between the axis and the robot and the LEDs: a camera rotating on a servomotor.
 
-![location](ressources/location.png)
+![location](resources/location.png)
 
 The angleNorth and angleToDirection datas are both the angle between the axis of the robot and the North.
 The angleNort is only measured at the initialisation of the robot.
