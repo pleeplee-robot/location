@@ -2,9 +2,9 @@
 
 from math import sqrt
 
-from pleeplee.geometry import (PRECISION, Point, angleBetween2Vects,
+from pleepleeloc.geometry import (PRECISION, Point, angleBetween2Vects,
                                rotateVector)
-from pleeplee.utils import Color
+from pleepleeloc.utils import Color
 
 
 # Test the Point class

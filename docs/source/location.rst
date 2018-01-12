@@ -3,5 +3,5 @@
 Location
 ========
 
-.. automodule:: pleeplee.location
+.. automodule:: pleepleeloc.location
     :members:

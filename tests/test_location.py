@@ -3,9 +3,9 @@
 import pytest
 from pytest_mock import mocker
 
-from pleeplee.geometry import Point
-from pleeplee.location import Location, Odometry, filterOdometry
-from pleeplee.utils import LED, Color, Data
+from pleepleeloc.geometry import Point
+from pleepleeloc.location import Location, Odometry, filterOdometry
+from pleepleeloc.utils import LED, Color, Data
 
 
 def test_odometry():

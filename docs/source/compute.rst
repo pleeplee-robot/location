@@ -3,5 +3,5 @@
 Compute
 =======
 
-.. automodule:: pleeplee.compute
+.. automodule:: pleepleeloc.compute
     :members:

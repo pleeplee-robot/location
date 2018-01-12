@@ -27,7 +27,7 @@ setup(
     name='pleeplee-location',
     version=VERSION,
     license='MIT License',
-    packages=['pleeplee'],
+    packages=['pleepleeloc'],
     include_package_data=True,
     zip_safe=False,  # Because of the certificate
     install_requires=[
@@ -51,6 +51,6 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Framework :: Robot Framework',
         'Framework :: Robot Framework :: Tool',
-        'Development Status :: 1 - Planning'
+        'Development Status :: 4 - Beta'
     ]
 )

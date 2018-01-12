@@ -2,8 +2,8 @@
 
 import pytest
 
-from pleeplee.geometry import Point
-from pleeplee.utils import LED, Color, Data
+from pleepleeloc.geometry import Point
+from pleepleeloc.utils import LED, Color, Data
 
 # Data:
 

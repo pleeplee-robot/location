@@ -3,5 +3,5 @@
 Geometry
 ========
 
-.. automodule:: pleeplee.geometry
+.. automodule:: pleepleeloc.geometry
     :members:

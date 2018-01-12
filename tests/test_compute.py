@@ -5,9 +5,9 @@ import math
 import pytest
 from pytest_mock import mocker
 
-from pleeplee.compute import *
-from pleeplee.geometry import Point
-from pleeplee.utils import LED, Color, Data
+from pleepleeloc.compute import *
+from pleepleeloc.geometry import Point
+from pleepleeloc.utils import LED, Color, Data
 
 # Data needed for Mocks:
 # Test data set 1

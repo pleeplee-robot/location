@@ -3,5 +3,5 @@
 Utils
 =====
 
-.. automodule:: pleeplee.utils
+.. automodule:: pleepleeloc.utils
     :members:
