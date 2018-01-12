@@ -1,4 +1,9 @@
-# The Project
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## PleePlee Robot
+
+![logo](ressources/logo-pleeplee.png)
 
 PleePlee is a proof of concept of a mobile gardener robot.
 This repository is about the location of the robot.
@@ -44,4 +49,72 @@ $ python setup.py develop
 
 ## Getting started
 
+The code is divided in four files:
+- compute: contains most of the mathematical computations.
+- geometry: contains the geometric shapes and utility mathematical functions.
+- location: contains the main class of the api: Location. Also contains the Odometry class.
+- utils: contains the class used for the data input.
 
+If this is confusing, most of the time to use the api you will need these imports:
+
+```python
+from pleepleeloc.geometry import Point
+from pleepleeloc.location import Location, Odometry
+from pleepleeloc.utils import LED, Color, Data
+```
+
+Here is a code example of usage of the API:
+
+Define the perimeter of the "garden":
+```python
+corner1 = LED(Color.RED, Point(3.0, 3.0))
+corner2 = LED(Color.YELLOW, Point(13.0, 5.0))
+corner3 = LED(Color.BLUE, Point(11.0, 9.0))
+corner4 = LED(Color.GREEN, Point(1.0, 10.0))
+perimeter = [corner1, corner2, corner3, corner4]
+```
+
+Get the datas at initialisation:
+```python
+#Direction of initialisation
+dirInit = (-10.0, -10.0)
+angleNorth = -45.0
+angleToDirection = -90.0
+# Height difference between the height of the robot camera and the height of the LEDS
+height = 0.0
+```
+
+Initialize the datas of the LEDS and the angle between their position and the axis of the robot:
+```python
+args = [angleNorth, angleToDirection, perimeter]
+
+data0 = Data(Color.RED, 134.0, *args)
+data1 = Data(Color.YELLOW, 19.0, *args)
+data2 = Data(Color.BLUE, -25.0, *args)
+datas = [data0, data1, data2]
+```
+Initialise the Odometry datas:
+```python
+odometry = Odometry(Point(6.5, 6.7), 0.6)
+```
+Finally computation of the current position of the robot given all these datas:
+```python
+loc = Location(angleNorth, dirInit, height, *perimeter)
+actualLocation = loc.computePos(angleToDirection, odometry, *datas)
+```
+
+The `Location` class only needs to be initialized once and the location can
+be updated easily with the `Location.computePos` function.
+
+## Documentation of the project
+
+The documentation is generated with sphinx.
+
+You can get the documentation of the project by installing the package as specified above and just running the `make doc` command.
+Then use your favorite web navigator to open the `index.html` located in `docs/build/html`.
+
+## Running the tests
+
+To run the test:
+- Get the pytest and pytest-mock packages.
+- Run the ``make check`` command or ``pytest``
