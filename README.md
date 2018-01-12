@@ -7,6 +7,8 @@
 
 PleePlee is a proof of concept of a mobile gardener robot.
 This repository is about the location of the robot.
+The location is based on a combination of a triangularisation from luminous
+landmarks and odometry data.
 
 ## Features
 
@@ -30,6 +32,19 @@ The location is estimated with multiple datas:
   - the angle between the axis of the robot and each landmark
   - the position of the north
   - odometry
+
+The datas necessary for the location are to be measured with the necessary captors on the robot.
+
+For the PleePlee robot here is how we took the necessary measures:
+- Odometry with optical odometric captors.
+- The north with a magnetic captor
+- The angle between the axis and the robot and the LEDs: a camera rotating on a servomotor.
+
+![location](ressources/location.png)
+
+The angleNorth and angleToDirection datas are both the angle between the axis of the robot and the North.
+The angleNort is only measured at the initialisation of the robot.
+The angleToDirection is measured each time the location is needed.
 
 ## Installation and requirements
 
