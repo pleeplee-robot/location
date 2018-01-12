@@ -1,12 +1,22 @@
 # The Project
 
-We are three students soon-to-be system and embeded engineers.
-PleePlee is a small gardener robot we are building for our master's project.
+PleePlee is a proof of concept of a mobile gardener robot.
+This repository is about the location of the robot.
+
+## Features
+
+The PleePlee robot is able to:
+- :seedling: :shower: Water plants.
+- :car: Move in a straight line and turn in place.
+- :bulb: :satellite: Localize itself in a small area delimited by luminous landmarks.
+- :curly_loop: Avoid obstacles.
+- :eyes: Log any changes to the garden. (Foreign object or person crossing).
 
 ## Location
 
-This repository is about the location of the robot. The robot will be able to
-move in a predefined area delimited at each corner by luminous landmark.
+This repositiory only contains the code for the location of the robot.
+The robot is able to move in a predefined area delimited at each corner
+by luminous landmark.
 Each luminous landmark is built from LEDs and each corner will have a different
 color.
 
@@ -16,14 +26,22 @@ The location is estimated with multiple datas:
   - the position of the north
   - odometry
 
-## TODO
+## Installation and requirements
 
-* Compute location
-  * [X] Complete the algorithm for non adjacent points
-  * [X] Calculation of the angles with the vectors
-  * [X] Synthetize the computations for 3 and 4 points
-  * [X] Odometry
-  * [X] Height parameter for the LEDs
-  * [X] Code is PEP8 compliant (yapf, flake8, isort)
-  * [X] Add Documentation
-  * [ ] Improve Documentation
+To test or use the code you only need python 3.
+
+To install the package:
+
+```bash
+$ git clone https://github.com/pleeplee-robot/location.git
+```
+
+Install using develop mode:
+
+```bash
+$ python setup.py develop
+```
+
+## Getting started
+
+
